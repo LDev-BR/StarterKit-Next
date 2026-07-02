@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+}
+
+:root {
+  --background: #f4f5f9;
+  --foreground: #101116;
+  --card: #ffffff;
+  --card-foreground: #101116;
+  --primary: #007bff;
+  --primary-foreground: #ffffff;
+  --muted: #edf0f5;
+  --muted-foreground: #6c738a;
+  --border: #e2e5f0;
+}
+
+.dark {
+  --background: #0d0e12;
+  --foreground: #f8f9fa;
+  --card: #15161d;
+  --card-foreground: #f8f9fa;
+  --primary: #0084ff;
+  --primary-foreground: #ffffff;
+  --muted: #1c1e26;
+  --muted-foreground: #8e94a8;
+  --border: #232533;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism custom helpers */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-effect {
+  background: rgba(18, 18, 18, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}

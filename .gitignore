@@ -1,0 +1,63 @@
+# Dependencies
+/node_modules/
+/.pnpm-store/
+/.pnp/
+/.pnp.*
+
+# Package-manager drift
+package-lock.json
+yarn.lock
+bun.lockb
+
+# Next.js
+/.next/
+/out/
+
+# Build output and caches
+/dist/
+/build/
+/.turbo/
+/.swc/
+/.vite/
+/.vitest/
+/.cache/
+.eslintcache
+*.tsbuildinfo
+
+# Tests and coverage
+/coverage/
+/test-results/
+/playwright-report/
+/.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Deployment tool state
+/.vercel/
+/.netlify/
+/.railway/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+/.idea/
+/.vscode/*
+!/.vscode/settings.json
+!/.vscode/extensions.json
+
+# Local agent/tool metadata
+/.agents/
+/.codex/
