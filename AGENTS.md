@@ -9,6 +9,23 @@ PostgreSQL real, Railway CD ou monorepo sem pedido explicito do usuario.
 Apos a validacao do frontend, o desenvolvimento ativo do backend e do banco de
 dados sera a proxima fase do projeto.
 
+## Documentacao para agentes
+
+Antes de alterar codigo, leia `docs/README.md` e o documento de dominio
+relevante:
+
+- `docs/AGENT_WORKFLOWS.md`: fluxo de trabalho, guardrails e validacao.
+- `docs/ARCHITECTURE.md`: arquitetura atual e limites conhecidos.
+- `docs/FRONTEND_PATTERNS.md`: padroes visuais e de UI.
+- `docs/DATA_AND_API_CONTRACTS.md`: mocks, store e contratos de API.
+- `docs/ROADMAP.md`: fases atuais e futuras.
+- `docs/PRODUCTION_CHECKLIST.md`: criterios para producao.
+
+Para tarefas de Next.js, App Router, build, deploy, metadata, imagens, routing,
+Server Components ou Client Components, consulte a documentacao local versionada
+em `node_modules/next/dist/docs/` antes de editar. Ela corresponde a versao do
+Next instalada no projeto.
+
 ## Principios
 
 - Preserve a identidade visual existente: glassmorphism, tema claro/escuro,
@@ -31,7 +48,7 @@ dados sera a proxima fase do projeto.
 
 ## Validacao esperada
 
-Antes de finalizar alteracoes de codigo, rode quando possivel:
+Antes de finalizar alterações de codigo, rode quando possível:
 
 ```bash
 pnpm run lint

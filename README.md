@@ -81,6 +81,20 @@ responsividade, contratos de API e qualidade de build. Depois dessa validacao,
 comeca o desenvolvimento ativo do backend e do banco de dados, substituindo
 gradualmente os mocks em `services/` e `lib/store.ts` por integracoes reais.
 
+## Documentacao para desenvolvimento agentico
+
+A pasta `docs/` contem documentos praticos para orientar agentes de IA e
+desenvolvedores:
+
+- `docs/AGENT_WORKFLOWS.md`
+- `docs/ARCHITECTURE.md`
+- `docs/FRONTEND_PATTERNS.md`
+- `docs/DATA_AND_API_CONTRACTS.md`
+- `docs/ROADMAP.md`
+- `docs/PRODUCTION_CHECKLIST.md`
+
+Comece por `docs/README.md` antes de delegar ou executar tarefas agenticas.
+
 ## Docker
 
 Crie o arquivo local de ambiente:
