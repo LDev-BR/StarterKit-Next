@@ -164,6 +164,7 @@ export function FormShowcase() {
                 </span>
                 <input
                   type="text"
+                  aria-label="Pesquisar projetos"
                   placeholder="Pesquisar por nome, descrição ou e-mail..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -174,6 +175,7 @@ export function FormShowcase() {
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
                 <select
+                  aria-label="Filtrar projetos por plano"
                   value={planFilter}
                   onChange={(e) => setPlanFilter(e.target.value)}
                   className="bg-background border border-border rounded-lg h-10 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
@@ -229,6 +231,7 @@ export function FormShowcase() {
                       <div className="w-full md:w-auto flex justify-end shrink-0 border-t md:border-t-0 border-border/40 pt-3 md:pt-0">
                         <Button
                           id={`btn-delete-${project.id}`}
+                          aria-label={`Remover projeto ${project.projectName}`}
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(project.id, project.projectName)}
@@ -256,6 +259,7 @@ export function FormShowcase() {
                 type="button"
                 onClick={() => setShowAddForm(false)}
                 className="text-muted-foreground hover:text-foreground cursor-pointer"
+                aria-label="Fechar formulário de projeto"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -289,13 +293,15 @@ export function FormShowcase() {
                   id="projectDescription"
                   placeholder="Especifique as metas de escala para o Kubernetes..."
                   rows={3}
+                  aria-invalid={!!errors.projectDescription}
+                  aria-describedby={errors.projectDescription ? 'projectDescription-error' : undefined}
                   className={`flex w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all ${
                     errors.projectDescription ? 'border-red-500' : ''
                   }`}
                   {...register('projectDescription')}
                 />
                 {errors.projectDescription && (
-                  <span className="text-[10px] text-red-500 font-semibold">{errors.projectDescription.message}</span>
+                  <span id="projectDescription-error" className="text-[10px] text-red-500 font-semibold">{errors.projectDescription.message}</span>
                 )}
               </div>
 
@@ -330,6 +336,8 @@ export function FormShowcase() {
                 <input
                   type="checkbox"
                   id="acceptTerms"
+                  aria-invalid={!!errors.acceptTerms}
+                  aria-describedby={errors.acceptTerms ? 'acceptTerms-error' : undefined}
                   className="mt-0.5 cursor-pointer h-4 w-4 accent-primary rounded border-border"
                   {...register('acceptTerms')}
                 />
@@ -338,7 +346,7 @@ export function FormShowcase() {
                     Concordo com os padrões de governança, conformidade interna de rede local e auditoria.
                   </label>
                   {errors.acceptTerms && (
-                    <span className="text-[10px] text-red-500 font-semibold block mt-0.5">{errors.acceptTerms.message}</span>
+                    <span id="acceptTerms-error" className="text-[10px] text-red-500 font-semibold block mt-0.5">{errors.acceptTerms.message}</span>
                   )}
                 </div>
               </div>
@@ -377,9 +385,9 @@ export function FormShowcase() {
       <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 flex gap-4">
         <Info className="h-6 w-6 text-primary shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <h4 className="text-xs font-black uppercase text-foreground">Conectores de Persistência PostgreSQL</h4>
+          <h4 className="text-xs font-black uppercase text-foreground">Caminho para persistência futura</h4>
           <p className="text-xs text-muted-foreground leading-relaxed leading-medium">
-            Toda a lógica interativa acima está ligada aos repositórios unificados em memória. Para transformá-lo em gravação permanente, insira o Drizzle ORM ou TypeORM no NestJS, mapeando as rotas <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">/api/projects</code>.
+            Toda a lógica interativa acima usa estado em memória e mocks. Na próxima fase, congele o contrato de projetos antes de escolher endpoints, persistência real ou ORM.
           </p>
         </div>
       </div>

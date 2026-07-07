@@ -49,7 +49,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <motion.button
-      id={id ?? 'btn-generic'}
+      id={id}
       type={type}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}

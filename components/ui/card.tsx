@@ -4,11 +4,11 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+type CardProps = React.ComponentPropsWithoutRef<typeof motion.div> & {
   id?: string;
   isHoverable?: boolean;
   isGlass?: boolean;
-}
+};
 
 export function Card({ className, id, isHoverable = false, isGlass = false, ...props }: CardProps) {
   return (
@@ -21,7 +21,7 @@ export function Card({ className, id, isHoverable = false, isGlass = false, ...p
         isHoverable ? 'hover:shadow-md transition-shadow' : '',
         className
       )}
-      {...(props as any)}
+      {...props}
     />
   );
 }

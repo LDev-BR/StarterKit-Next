@@ -116,9 +116,23 @@ Testes existentes cobrem:
 - `Button`.
 - `useTheme` dentro do `ThemeProvider`.
 - `cn` em `lib/utils.ts`.
+- `useAppStore` nos fluxos mockados de auth, perfil, projetos, notificacoes,
+  configuracao, API keys, assinatura e uso.
+- `Modal` e `Dialog` com semantica acessivel de dialogo.
+- Formularios criticos de auth, projetos e settings.
 
 Novas regras de negocio no store, formularios ou contratos devem receber teste
 focado quando alterarem comportamento.
+
+## Acessibilidade aplicada
+
+Componentes de overlay devem expor `role="dialog"`, `aria-modal`, nome e
+descricao acessiveis. Botoes icon-only devem usar `aria-label`; `title` sozinho
+nao deve ser usado como nome acessivel de controle interativo.
+
+Campos customizados de formulario devem conectar erros com `aria-invalid` e
+`aria-describedby`, incluindo `textarea`, `checkbox`, `select` e inputs que nao
+passam pelo componente base `Input`.
 
 ## Limites conhecidos
 
@@ -128,4 +142,3 @@ focado quando alterarem comportamento.
 - Docker Compose inclui PostgreSQL local, mas o frontend nao persiste dados nele.
 - Nao existe CI versionado em `.github` no estado atual.
 - `next-env.d.ts` e gerado pelo Next e nao deve ser editado manualmente.
-

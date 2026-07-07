@@ -32,9 +32,9 @@ import { ComponentsGuide } from '../components/components-guide';
 
 const connectionSchema = z.object({
   apiEndpoint: z.string().url({ message: 'O endpoint da API REST deve ser uma URL válida (HTTP/HTTPS).' }),
-  dbHost: z.string().min(2, { message: 'O Host do banco PostgreSQL deve possuir pelo menos 2 caracteres.' }),
+  dbHost: z.string().min(2, { message: 'O host mock de banco deve possuir pelo menos 2 caracteres.' }),
   dbPort: z.coerce.number().min(1024).max(65535, { message: 'Portas TCP válidas estão entre 1024 e 65535.' }),
-  dbUser: z.string().min(2, { message: 'Inutilize namespaces vazios para usuário do banco.' }),
+  dbUser: z.string().min(2, { message: 'Informe um usuário mock com pelo menos 2 caracteres.' }),
 });
 
 const profileSchema = z.object({
@@ -153,7 +153,7 @@ export function SettingsShowcase() {
           Configurações Integradas
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Gerencie seu perfil operativo, controle chaves criptográficas de API e administre conectores locais de banco de dados.
+          Gerencie seu perfil operativo, controle chaves demonstrativas de API e administre conectores locais simulados.
         </p>
       </div>
 
@@ -161,6 +161,7 @@ export function SettingsShowcase() {
       <div className="flex border-b border-border/60 gap-4">
         <button
           onClick={() => setActiveSubTab('profile')}
+          aria-pressed={activeSubTab === 'profile'}
           className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
             activeSubTab === 'profile'
               ? 'border-primary text-primary'
@@ -171,6 +172,7 @@ export function SettingsShowcase() {
         </button>
         <button
           onClick={() => setActiveSubTab('appearance')}
+          aria-pressed={activeSubTab === 'appearance'}
           className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
             activeSubTab === 'appearance'
               ? 'border-primary text-primary'
@@ -181,6 +183,7 @@ export function SettingsShowcase() {
         </button>
         <button
           onClick={() => setActiveSubTab('infrastructure')}
+          aria-pressed={activeSubTab === 'infrastructure'}
           className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
             activeSubTab === 'infrastructure'
               ? 'border-primary text-primary'
@@ -191,6 +194,7 @@ export function SettingsShowcase() {
         </button>
         <button
           onClick={() => setActiveSubTab('design')}
+          aria-pressed={activeSubTab === 'design'}
           className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
             activeSubTab === 'design'
               ? 'border-primary text-primary'
@@ -281,7 +285,7 @@ export function SettingsShowcase() {
                   Assinatura de Sessão JWT
                 </CardTitle>
                 <CardDescription>
-                  Inspecione o cabeçalho Bearer autenticado por criptografia local.
+                  Inspecione o token Bearer demonstrativo da sessão mockada.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -430,7 +434,7 @@ export function SettingsShowcase() {
                   Chaves de API Ativas
                 </CardTitle>
                 <CardDescription>
-                  Use essas chaves para autenticar requisições de microsserviços externos no gateway de segurança do starter kit.
+                  Use essas chaves apenas como valores demonstrativos para validar a interface do starter kit.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -439,6 +443,7 @@ export function SettingsShowcase() {
                   <input
                     type="text"
                     required
+                    aria-label="Nome da chave de API"
                     placeholder="Nome do Token (Ex: Staging Gateway)"
                     value={newKeyName}
                     onChange={(e) => setNewKeyName(e.target.value)}
@@ -473,6 +478,7 @@ export function SettingsShowcase() {
                               type="button"
                               onClick={() => handleCopyKey(key.id, key.key)}
                               className="text-muted-foreground hover:text-foreground cursor-pointer"
+                              aria-label={`Copiar chave ${key.name}`}
                             >
                               {copiedKeyId === key.id ? (
                                 <Check className="h-3.5 w-3.5 text-green-500" />
@@ -492,6 +498,7 @@ export function SettingsShowcase() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleRevokeKey(key.id, key.name)}
+                            aria-label={`Revogar chave ${key.name}`}
                             className="h-7 w-7 p-0 text-muted-foreground hover:bg-rose-500/15 hover:text-rose-500 cursor-pointer"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -523,6 +530,7 @@ export function SettingsShowcase() {
                   </div>
                   <input
                     type="range"
+                    aria-label="Latência das requisições mockadas"
                     min="50"
                     max="3000"
                     step="50"
@@ -546,6 +554,8 @@ export function SettingsShowcase() {
                   </div>
                   <button
                     type="button"
+                    aria-label="Alternar simulação de erro de banco"
+                    aria-pressed={config.simulateDbFailure}
                     onClick={() => {
                       const nextVal = !config.simulateDbFailure;
                       updateConfig({ simulateDbFailure: nextVal });
@@ -580,14 +590,14 @@ export function SettingsShowcase() {
             </Card>
           </div>
 
-          {/* Docker-compose PostgreSQL connect parameters form */}
+          {/* Mock connection parameters form */}
           <form
             onSubmit={handleConnectionSubmit(onSaveConnections)}
             className="lg:col-span-5 bg-card border border-border rounded-xl shadow-xs overflow-hidden"
           >
             <div className="px-5 py-4 border-b border-border bg-muted/20 flex justify-between items-center">
               <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-2">
-                <Database className="h-4 w-4 text-primary" /> Parâmetros PostgreSQL
+                <Database className="h-4 w-4 text-primary" /> Parâmetros de conexão mock
               </span>
               <span className="text-[9px] px-2 py-0.5 bg-primary/10 text-primary rounded font-black uppercase tracking-wider">
                 Dockered Env
@@ -606,7 +616,7 @@ export function SettingsShowcase() {
 
               <div className="space-y-1">
                 <Input
-                  label="Host do Banco de Dados"
+                  label="Host mock de Banco"
                   placeholder="Ex: sql-primary-cluster"
                   error={connectionErrors.dbHost?.message}
                   {...regConnection('dbHost')}
@@ -626,7 +636,7 @@ export function SettingsShowcase() {
 
                 <div className="space-y-1">
                   <Input
-                    label="Usuário Master"
+                    label="Usuário mock"
                     placeholder="starter_admin"
                     error={connectionErrors.dbUser?.message}
                     {...regConnection('dbUser')}
@@ -636,7 +646,7 @@ export function SettingsShowcase() {
 
               <div className="pt-4 border-t border-border/40 flex justify-between items-center gap-4">
                 <p className="text-[10px] text-muted-foreground">
-                  Simula variáveis de ambiente lidas pelo core contêiner.
+                  Simula variáveis de ambiente para validação visual local.
                 </p>
                 <Button
                   id="btn-settings-infra-save"

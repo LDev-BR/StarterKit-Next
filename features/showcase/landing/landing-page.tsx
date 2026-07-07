@@ -88,13 +88,13 @@ export function LandingPage() {
     },
     {
       icon: Database,
-      title: 'Pronto para Integração Relacional',
-      desc: 'Camadas de serviço com suporte para integração nativa com NestJS e PostgreSQL sem necessidade de refatoração.',
+      title: 'Preparado para Contratos Reais',
+      desc: 'Camadas de serviço mockadas mantêm fronteiras claras para uma futura integração com API e persistência reais.',
     },
     {
       icon: Terminal,
       title: 'Amigável a Conteinerização (Docker)',
-      desc: 'Orquestração pronta com Dockerfile e docker-compose multi-stage otimizados para desenvolvimento e produção.',
+      desc: 'Dockerfile e docker-compose disponíveis para desenvolvimento local e validação do frontend.',
     },
     {
       icon: Shield,
@@ -108,8 +108,8 @@ export function LandingPage() {
     },
     {
       icon: Workflow,
-      title: 'Pipeline CI/CD Robusto',
-      desc: 'Workflows configurados do GitHub Actions validando testes com Vitest, compilação de produção e linting estrito.',
+      title: 'Checklist de Qualidade Claro',
+      desc: 'Comandos de lint, typecheck, testes e build documentados para virar CI quando a validação frontend estabilizar.',
     }
   ];
 
@@ -133,12 +133,12 @@ export function LandingPage() {
       name: 'Business Pro',
       price: 'R$ 149',
       period: '/mês no plano anual',
-      desc: 'Ideal para equipes estruturando SaaS SaaS de alta escala integrados a NestJS.',
+      desc: 'Ideal para equipes estruturando uma base SaaS visual antes da integração com backend real.',
       features: [
         'Todos os recursos do plano Starter',
-        'Templates de Integração NestJS & Postgres',
+        'Contratos preparados para backend futuro',
         'Configuração Docker Multi-Ambiente Pronta',
-        'Acesso aos Workflows GitHub Actions CI/CD',
+        'Checklist para GitHub Actions CI/CD',
         'Suporte por E-mail em menos de 12 horas'
       ],
       cta: 'Iniciar Demonstração',
@@ -164,7 +164,7 @@ export function LandingPage() {
   const faqs = [
     {
       q: 'Este Starter Kit possui algum backend pré-configurado?',
-      a: 'Não. Este é um starter kit de front-end altamente profissional focado na arquitetura do lado do cliente. Ele foi desenhado especificamente para se integrar de forma indolor com NestJS e PostgreSQL no futuro, contendo todas as interfaces, repositórios e serviços devidamente abstracionados.'
+      a: 'Não. Este é um starter kit de front-end focado na arquitetura do lado do cliente. Ele mantém mocks, contratos e serviços separados para facilitar a próxima fase de desenho de backend e persistência.'
     },
     {
       q: 'Quais são as principais tecnologias do ecossistema?',
@@ -176,7 +176,7 @@ export function LandingPage() {
     },
     {
       q: 'Como realizo o deploy deste kit em produção?',
-      a: 'O projeto acompanha um arquivo Dockerfile otimizado para produção e configurações de workflows do GitHub Actions para garantir testes verdes. Você pode fazer o deploy em qualquer serviço compatível com containers (Cloud Run, AWS ECS, DigitalOcean, etc.).'
+      a: 'O projeto acompanha Dockerfile e scripts de validação, mas ainda não possui CI versionado. Antes de produção, rode lint, typecheck, testes, build e complete o checklist em docs/PRODUCTION_CHECKLIST.md.'
     }
   ];
 
@@ -224,7 +224,7 @@ export function LandingPage() {
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="h-8 w-8 rounded-lg border border-border bg-card/40 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              title="Alternar Tema"
+              aria-label="Alternar tema"
             >
               <Sparkles className="h-4 w-4" />
             </button>
@@ -263,7 +263,7 @@ export function LandingPage() {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3.5 py-1 text-[10px] font-black uppercase tracking-widest text-primary"
           >
-            <Code className="h-3.5 w-3.5 animate-pulse" /> ESTRUTURA PRONTA PARA PRODUÇÃO
+            <Code className="h-3.5 w-3.5 animate-pulse" /> FRONTEND EM VALIDAÇÃO FINAL
           </motion.div>
 
           {/* Primary Big Title */}
@@ -286,7 +286,7 @@ export function LandingPage() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed mt-2"
           >
-            Desenvolva seu próximo SaaS com uma arquitetura de arquétipos real. Sem improvisações: código 100% tipado estruturalmente, mock services acoplados e fluxos visuais prontos para acoplamento com NestJS & PostgreSQL.
+            Desenvolva seu próximo SaaS com uma base frontend tipada, mocks explícitos e fluxos visuais preparados para a fase futura de contratos, backend e persistência.
           </motion.p>
 
           {/* CTAs */}
@@ -448,7 +448,7 @@ export function LandingPage() {
                 <div className="h-5 w-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-[10px] font-bold shrink-0 mt-0.5">2</div>
                 <div>
                   <h4 className="text-xs font-black text-foreground uppercase tracking-tight">Configurações de infra em 1 clique</h4>
-                  <p className="text-[11px] text-muted-foreground">Mude latências e credenciais de banco nativos e audite os resultados em tempo real do dashboard.</p>
+                  <p className="text-[11px] text-muted-foreground">Mude latências e parâmetros mockados e audite os resultados em tempo real no dashboard.</p>
                 </div>
               </motion.div>
             </div>
@@ -660,7 +660,6 @@ export function LandingPage() {
             transition={{ duration: 0.3, ease: 'easeOut' }}
             onClick={scrollToTop}
             className="fixed bottom-6 right-6 z-50 p-3 rounded-xl bg-card/85 backdrop-blur-md border border-border/80 shadow-lg text-muted-foreground hover:text-foreground hover:border-primary/40 focus:outline-none transition-all cursor-pointer group"
-            title="Voltar ao Topo"
             aria-label="Voltar para o topo da página"
           >
             <ArrowUp className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1" />

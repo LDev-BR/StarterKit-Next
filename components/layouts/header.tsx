@@ -188,6 +188,7 @@ export function Header() {
             <Search className="h-3.5 w-3.5 absolute left-3 text-muted-foreground pointer-events-none" />
             <input
               type="text"
+              aria-label="Buscar recursos"
               placeholder="Buscar recursos..."
               className="w-full text-xs bg-muted/60 text-foreground border border-border/75 rounded-lg py-1.5 pl-9 pr-3 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/75"
             />

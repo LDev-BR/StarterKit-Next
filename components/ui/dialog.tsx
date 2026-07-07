@@ -29,6 +29,9 @@ export function Dialog({
   type = 'info',
   isConfirmLoading = false,
 }: DialogProps) {
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+
   const iconMap = {
     danger: <AlertCircle className="h-6 w-6 text-red-500" />,
     warning: <AlertCircle className="h-6 w-6 text-amber-500" />,
@@ -37,7 +40,14 @@ export function Dialog({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} id="dialog-wrapper" className="max-w-md">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      id="dialog-wrapper"
+      className="max-w-md"
+      ariaLabelledBy={titleId}
+      ariaDescribedBy={descriptionId}
+    >
       <div className="flex gap-4 items-start">
         <div className={cn(
           'p-2 rounded-full',
@@ -50,10 +60,10 @@ export function Dialog({
         </div>
 
         <div className="flex-1 flex flex-col gap-1 text-left align-left">
-          <h3 className="text-base font-semibold text-foreground tracking-tight">
+          <h3 id={titleId} className="text-base font-semibold text-foreground tracking-tight">
             {title}
           </h3>
-          <p className="text-sm text-muted-foreground mr-4 leading-relaxed">
+          <p id={descriptionId} className="text-sm text-muted-foreground mr-4 leading-relaxed">
             {description}
           </p>
         </div>

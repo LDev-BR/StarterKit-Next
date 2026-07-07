@@ -42,7 +42,7 @@ export function ShowcaseDashboard() {
 
   const handleConfirmSync = () => {
     setIsActionLoading(true);
-    addNotification('Efetuando re-sincronização do cluster PostgreSQL...', 'info');
+    addNotification('Efetuando re-sincronização do estado mockado...', 'info');
     
     setTimeout(() => {
       setIsActionLoading(false);
@@ -50,11 +50,11 @@ export function ShowcaseDashboard() {
       
       if (config.simulateDbFailure) {
         updateConfig({ simulateDbFailure: false });
-        addNotification('Cluster re-sincronizado. Banco PostgreSQL restabelecido!', 'success');
-        addLog('Cluster re-sincronizado', 'PostgreSQL recuperado com sucesso', 'success');
+        addNotification('Estado mockado re-sincronizado. Simulação de banco normalizada!', 'success');
+        addLog('Estado mock re-sincronizado', 'Simulação de banco recuperada com sucesso', 'success');
       } else {
-        addNotification('Cluster re-sincronizado e otimizado com êxito!', 'success');
-        addLog('Cluster re-sincronizado', 'Otimização de índices concluída', 'success');
+        addNotification('Estado mockado re-sincronizado com êxito!', 'success');
+        addLog('Estado mock re-sincronizado', 'Validação visual concluída', 'success');
       }
     }, Math.max(config.mockLatency, 800));
   };
@@ -131,7 +131,7 @@ export function ShowcaseDashboard() {
           <button
             onClick={() => addNotification('Filtro de calendário aberto', 'info')}
             className="h-9 w-9 bg-card border border-border rounded-xl text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors hover:bg-muted/30 cursor-pointer"
-            title="Escolher período"
+            aria-label="Escolher período"
           >
             <Calendar size={15} />
           </button>
@@ -154,10 +154,10 @@ export function ShowcaseDashboard() {
             <ShieldAlert className="h-6 w-6 shrink-0 mt-0.5 animate-pulse text-rose-500" />
             <div className="space-y-1">
               <h4 className="text-sm font-black uppercase tracking-wide">
-                Alerta Crítico: Backup do Banco de Dados Interrompido
+                Alerta crítico: simulação de persistência interrompida
               </h4>
               <p className="text-xs text-rose-400 leading-relaxed font-semibold">
-                O sinalizador de falha geral do banco foi ativado nas configurações do desenvolvedor. A replicação automática está pausada até que um re-sync seja disparado ou o sinalizador de simulação seja desativado.
+                O sinalizador de falha mock foi ativado nas configurações. A interface permanece em estado degradado até que a simulação seja normalizada.
               </p>
               <div className="pt-2">
                 <Button 
@@ -518,7 +518,7 @@ export function ShowcaseDashboard() {
                   <div className="space-y-1">
                     <h4 className="text-base font-black uppercase tracking-wider">Desbloquear Pro</h4>
                     <p className="text-[11px] text-neutral-400 font-bold leading-normal">
-                      Faça upgrade para o Pro para desbloquear este recurso e sincronizar modelos de banco de dados
+                      Faça upgrade para o Pro para desbloquear este recurso demonstrativo e visualizar mais dados mockados
                     </p>
                   </div>
                   
@@ -561,7 +561,7 @@ export function ShowcaseDashboard() {
                   </tr>
                   <tr>
                     <td className="py-3 px-3 font-bold">Albert Flores</td>
-                    <td className="py-3 px-3">PostgreSQL Multi-node</td>
+                    <td className="py-3 px-3">Persistência mock multi-node</td>
                     <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-500 uppercase text-[9px] font-bold">Processando</span></td>
                     <td className="py-3 px-3 text-right font-mono font-bold font-black">$450</td>
                   </tr>
@@ -583,7 +583,7 @@ export function ShowcaseDashboard() {
         
         {/* System Health / API Config */}
         <Card id="health-check-card" className="flex flex-col border border-border bg-card shadow-sm rounded-2xl p-6">
-          <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-4">Ambiente PostgreSQL & Gateway</h3>
+          <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-4">Ambiente Mock & Gateway</h3>
           
           <div className="flex-1 flex flex-col gap-4 justify-center">
             {/* Cluster Status Ring */}
@@ -603,7 +603,7 @@ export function ShowcaseDashboard() {
               </span>
               <div className="text-left">
                 <p className="text-xs font-bold uppercase text-foreground">
-                  {isHealthy ? 'Cluster Operacional' : 'Degradação Máxima'}
+                  {isHealthy ? 'Mock operacional' : 'Mock degradado'}
                 </p>
                 <p className="text-[9px] text-muted-foreground leading-none mt-1">Uptime auditável de {isHealthy ? '99.98%' : '74.20%'}</p>
               </div>
@@ -620,7 +620,7 @@ export function ShowcaseDashboard() {
                 <span className="text-green-600 dark:text-green-400 font-bold uppercase text-[9px] bg-green-500/10 px-2 py-0.5 rounded">Ativo</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted-foreground font-semibold">PostgreSQL Integrado:</span>
+                <span className="text-muted-foreground font-semibold">Persistência simulada:</span>
                 {isHealthy ? (
                   <span className="text-green-600 dark:text-green-400 font-bold uppercase text-[9px] bg-green-500/10 px-2 py-0.5 rounded">ONLINE</span>
                 ) : (
@@ -636,7 +636,7 @@ export function ShowcaseDashboard() {
                 size="sm" 
                 className="w-full text-xs cursor-pointer font-bold rounded-xl" 
                 onClick={() => {
-                  addNotification(`Host atual do banco: ${config.dbHost}:${config.dbPort}`, 'info');
+                  addNotification(`Host mock configurado: ${config.dbHost}:${config.dbPort}`, 'info');
                 }}
               >
                 Inspecionar VEs
@@ -647,7 +647,7 @@ export function ShowcaseDashboard() {
                 className="w-full text-xs cursor-pointer font-bold rounded-xl" 
                 onClick={() => setIsDialogOpen(true)}
               >
-                Re-sincronizar
+                Re-sincronizar mock
               </Button>
             </div>
           </div>
@@ -721,9 +721,9 @@ export function ShowcaseDashboard() {
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onConfirm={handleConfirmSync}
-        title="Confirmar Re-sincronização do Cluster?"
-        description="Esta operação irá efetuar uma varredura interna no banco PostgreSQL, otimizando os índices de busca e limpando logs temporários do container Docker."
-        confirmText="Confirmar Sincronização"
+        title="Confirmar re-sincronização do mock?"
+        description="Esta operação normaliza o estado simulado de infraestrutura e registra um evento visual no histórico local."
+        confirmText="Confirmar sincronização"
         cancelText="Voltar"
         type="warning"
         isConfirmLoading={isActionLoading}

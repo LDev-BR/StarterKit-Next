@@ -94,7 +94,7 @@ export function Sidebar() {
             type="button"
             onClick={toggleCollapse}
             className="h-7 w-7 rounded-lg border border-border/40 bg-background hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all cursor-pointer"
-            title="Recolher Sidebar"
+            aria-label="Recolher sidebar"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -117,7 +117,7 @@ export function Sidebar() {
               type="button"
               onClick={toggleCollapse}
               className="h-7 w-7 rounded-lg border border-border/40 bg-background hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all cursor-pointer"
-              title="Expandir Sidebar"
+              aria-label="Expandir sidebar"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -145,7 +145,7 @@ export function Sidebar() {
                       ? 'bg-neutral-200/50 dark:bg-neutral-800/60 dark:border dark:border-border/60 text-foreground font-semibold shadow-inner'
                       : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
                   )}
-                  title={isCollapsed ? item.label : undefined}
+                  aria-label={isCollapsed ? item.label : undefined}
                 >
                   <Icon className={cn('h-4 w-4 shrink-0 transition-transform group-hover:scale-105', isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground')} />
                   {!isCollapsed && <span>{item.label}</span>}
@@ -174,6 +174,8 @@ export function Sidebar() {
             {/* iOS-like Switch Active Slider */}
             <button
                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              aria-label="Alternar modo escuro"
+              aria-pressed={theme === 'dark'}
               className={cn(
                 "w-9 h-5 rounded-full p-0.5 transition-colors duration-200 cursor-pointer outline-none relative",
                 theme === 'dark' ? "bg-primary" : "bg-neutral-300 dark:bg-neutral-700"
@@ -237,7 +239,9 @@ export function Sidebar() {
               "flex items-center gap-3 rounded-lg bg-primary/5 border border-primary/15 transition-all cursor-pointer hover:bg-primary/10 select-none",
               isCollapsed ? "flex-col justify-center p-2 gap-1.5" : "p-3.5 flex-row text-left"
             )}
-            title="Ver Perfil & Conta"
+            role="button"
+            tabIndex={0}
+            aria-label="Ver perfil e conta"
           >
             {/* High Fidelity Circle Avatar */}
             <div className="h-8 w-8 rounded-full border border-primary/25 bg-primary/10 flex items-center justify-center font-bold text-[10px] uppercase text-primary shrink-0 relative">
@@ -273,7 +277,7 @@ export function Sidebar() {
                 <p className="text-[9px] text-muted-foreground leading-none mt-1 font-semibold">Clique para entrar</p>
               </>
             ) : (
-              <div className="h-8 w-8 bg-rose-500/10 rounded-full flex items-center justify-center text-rose-500 font-bold text-xs" title="Não Autenticado">
+              <div className="h-8 w-8 bg-rose-500/10 rounded-full flex items-center justify-center text-rose-500 font-bold text-xs" aria-label="Não autenticado">
                 ?
               </div>
             )}

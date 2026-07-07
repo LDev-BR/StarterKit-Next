@@ -31,7 +31,18 @@ export function BillingShowcase() {
 
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
 
-  const plans = [
+  type PlanId = 'free' | 'pro' | 'enterprise';
+
+  interface BillingPlan {
+    id: PlanId;
+    name: string;
+    price: number;
+    description: string;
+    features: string[];
+    cta: string;
+  }
+
+  const plans: BillingPlan[] = [
     {
       id: 'free',
       name: 'Starter',
@@ -44,8 +55,7 @@ export function BillingShowcase() {
         'Painel em tempo real básico',
         'Suporte via comunidade'
       ],
-      cta: 'Plano Atual',
-      activeId: 'free'
+      cta: 'Plano Atual'
     },
     {
       id: 'pro',
@@ -53,14 +63,13 @@ export function BillingShowcase() {
       price: 10,
       description: 'Ideal para projetos em crescimento e integração contínua.',
       features: [
-        'Banco PostgreSQL auto-escalável',
+        'Cotas simuladas para cenários PostgreSQL',
         'Até 100.000 requisições/mês',
         'Chaves de API ilimitadas',
-        'Replicação em múltiplos containers',
+        'Cenários visuais de replicação em containers',
         'Suporte prioritário 24/7'
       ],
-      cta: 'Upgrade para Pro',
-      activeId: 'pro'
+      cta: 'Upgrade para Pro'
     },
     {
       id: 'enterprise',
@@ -68,14 +77,13 @@ export function BillingShowcase() {
       price: 99,
       description: 'Desempenho máximo e isolamento completo para sua corporação.',
       features: [
-        'Cluster PostgreSQL exclusivo dedicado',
-        'SLA de 99.99% garantido em contrato',
-        'Controle completo de criptografia JWT',
-        'Backup automático de hora em hora',
+        'Cenário enterprise dedicado em mock',
+        'Indicadores visuais de SLA para demonstração',
+        'Controle demonstrativo de sessão JWT',
+        'Simulação de backup recorrente',
         'Gerente de conta exclusivo'
       ],
-      cta: 'Contatar Vendas',
-      activeId: 'enterprise'
+      cta: 'Contatar Vendas'
     }
   ];
 
@@ -86,7 +94,7 @@ export function BillingShowcase() {
     { id: 'INV-2026-001', date: '18 Mar, 2026', amount: '$0.00', status: 'Pago' },
   ];
 
-  const handleSelectPlan = (tier: 'free' | 'pro' | 'enterprise') => {
+  const handleSelectPlan = (tier: PlanId) => {
     if (tier === 'enterprise') {
       addNotification('Solicitação enviada! Nossa equipe de vendas corporativas entrará em contato.', 'info');
       return;
@@ -125,6 +133,7 @@ export function BillingShowcase() {
         <div className="flex items-center gap-2 p-1 bg-neutral-100/60 dark:bg-neutral-800/30 border border-border rounded-xl">
           <button
             onClick={() => setBillingCycle('monthly')}
+            aria-pressed={billingCycle === 'monthly'}
             className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all ${
               billingCycle === 'monthly'
                 ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
@@ -135,6 +144,7 @@ export function BillingShowcase() {
           </button>
           <button
             onClick={() => setBillingCycle('annually')}
+            aria-pressed={billingCycle === 'annually'}
             className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1 ${
               billingCycle === 'annually'
                 ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
@@ -194,7 +204,7 @@ export function BillingShowcase() {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/40">
               <span className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Database className="h-4 w-4 text-purple-500" /> PostgreSQL Storage
+                <Database className="h-4 w-4 text-purple-500" /> Storage simulado
               </span>
               <span className="text-[10px] bg-purple-500/10 text-purple-500 px-2 py-0.5 rounded font-bold">
                 {((dbUsage / (subscription === 'free' ? 1 : subscription === 'pro' ? 10 : 100)) * 100).toFixed(0)}%
@@ -210,7 +220,7 @@ export function BillingShowcase() {
                   / {subscription === 'free' ? '1 GB' : subscription === 'pro' ? '10 GB' : '100 GB'}
                 </span>
               </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">Tamanho total dos índices & tabelas SQL</p>
+              <p className="text-[10px] text-muted-foreground font-semibold">Tamanho demonstrativo dos dados do starter kit</p>
             </div>
 
             {/* Custom tailored progress bar */}
@@ -222,7 +232,7 @@ export function BillingShowcase() {
             </div>
           </div>
           <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider pt-3 border-t border-border/40 mt-4">
-            Replicação ativa em tempo real
+            Replicação visual em modo mock
           </p>
         </Card>
 
@@ -318,7 +328,7 @@ export function BillingShowcase() {
 
                 <div className="mt-8">
                   <Button
-                    onClick={() => handleSelectPlan(plan.id as any)}
+                    onClick={() => handleSelectPlan(plan.id)}
                     variant={isCurrent ? 'outline' : plan.id === 'pro' ? 'default' : 'glass'}
                     className={`w-full font-black uppercase text-[10px] tracking-wider py-2.5 cursor-pointer rounded-xl ${
                       isCurrent ? 'border-primary/35 text-primary bg-transparent hover:bg-primary/5' : ''
@@ -439,7 +449,7 @@ export function BillingShowcase() {
                       <button
                         onClick={() => addNotification(`Baixando recibo em PDF da fatura ${invoice.id}...`, 'success')}
                         className="p-1 text-muted-foreground hover:text-foreground cursor-pointer hover:bg-muted/60 rounded transition-colors"
-                        title="Baixar PDF Recibo"
+                        aria-label={`Baixar recibo da fatura ${invoice.id}`}
                       >
                         <Download size={13} />
                       </button>

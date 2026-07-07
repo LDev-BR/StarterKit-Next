@@ -151,8 +151,8 @@ export function ComponentsGuide() {
         <div className="text-left">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Fallback: Falhas e Quedas (Error State)</p>
           <ErrorState
-            title="Conexão com PostgreSQL Expirada"
-            message="O cluster principal do docker-compose não responde no socket local na porta 5432. Certifique-se de iniciar os containers locais."
+            title="Conexão mock expirada"
+            message="O estado simulado de infraestrutura foi degradado para validar a experiência de erro do frontend."
             onRetry={() => addNotification('Buscando reconexão fictícia...', 'info')}
           />
         </div>

@@ -16,50 +16,55 @@ implementados sem pedido explicito.
 
 ## Gate de validacao frontend
 
-- [ ] `pnpm run lint` passa.
-- [ ] `pnpm run lint:types` passa.
-- [ ] `pnpm test` passa.
-- [ ] `pnpm run build` passa.
+- [x] `pnpm run lint` passa.
+- [x] `pnpm run lint:types` passa.
+- [x] `pnpm test` passa.
+- [x] `pnpm run build` passa.
 - [ ] Landing renderiza em mobile e desktop.
-- [ ] Login/register mockados funcionam.
+- [x] Login/register mockados funcionam.
 - [ ] Dashboard nao quebra com dados mockados.
 - [ ] Projetos permitem criar, filtrar e remover sem quebrar layout.
 - [ ] Billing alterna planos e ciclo visual corretamente.
-- [ ] Settings atualiza perfil, config mock e API keys fake.
-- [ ] Tema claro/escuro funciona e persiste.
-- [ ] Notificacoes aparecem e podem ser limpas.
+- [x] Settings atualiza perfil, config mock e API keys fake.
+- [x] Tema claro/escuro funciona e persiste.
+- [x] Notificacoes aparecem e podem ser limpas.
 - [ ] Bottom nav mobile nao sobrepoe conteudo critico.
 - [ ] Textos longos nao estouram containers.
 
+Observacao de 2026-07-07: comandos de qualidade passaram localmente com
+`pnpm.cmd`. A verificacao visual mobile/desktop ficou pendente nesta sessao
+porque o Browser interno nao estava disponivel e Playwright nao esta instalado
+no projeto; o servidor Next existente respondeu HTTP 200 em `localhost:3000`.
+
 ## Qualidade de codigo
 
-- [ ] TypeScript strict mantido.
-- [ ] Nenhum novo `any` introduzido.
+- [x] TypeScript strict mantido.
+- [x] Nenhum novo `any` introduzido.
 - [ ] Componentes reutilizaveis ficam em `components/ui`.
 - [ ] Logica de dominio nao fica escondida em JSX sem necessidade.
 - [ ] Dependencias novas foram justificadas e documentadas.
 - [ ] Arquivos gerados pelo Next, como `next-env.d.ts`, nao foram editados
   manualmente.
-- [ ] Documentacao em `docs/` foi atualizada quando contratos ou arquitetura
+- [x] Documentacao em `docs/` foi atualizada quando contratos ou arquitetura
   mudaram.
 
 ## UI, acessibilidade e UX
 
 - [ ] Navegacao por teclado funciona em menus, formularios, modais e dialogs.
-- [ ] Botoes icon-only possuem `aria-label` ou nome acessivel.
-- [ ] Inputs possuem label e erros conectados.
+- [x] Botoes icon-only possuem `aria-label` ou nome acessivel.
+- [x] Inputs possuem label e erros conectados.
 - [ ] Contraste foi conferido em tema claro e escuro.
 - [ ] Animacoes respeitam movimento reduzido quando usam os presets.
 - [ ] Estados loading, vazio e erro existem nos fluxos que consultam dados.
-- [ ] Modais fecham por Escape e clique no backdrop quando aplicavel.
+- [x] Modais fecham por Escape e clique no backdrop quando aplicavel.
 - [ ] Layout foi verificado em pelo menos 375px, 768px, 1024px e desktop largo.
 
 ## Next.js e build
 
-- [ ] Mudancas de App Router foram conferidas na doc local
+- [x] Mudancas de App Router foram conferidas na doc local
   `node_modules/next/dist/docs/`.
-- [ ] `next.config.ts` continua com `reactStrictMode`.
-- [ ] `typescript.ignoreBuildErrors` continua `false`.
+- [x] `next.config.ts` continua com `reactStrictMode`.
+- [x] `typescript.ignoreBuildErrors` continua `false`.
 - [ ] `images.remotePatterns` permite apenas hosts necessarios.
 - [ ] Client Components sao usados por necessidade real de interatividade.
 - [ ] Server Components, Route Handlers e novas rotas so foram adicionados se a
@@ -127,4 +132,3 @@ Uma release de producao so deve ser aceita quando:
 - O build de producao foi executado.
 - Fluxos criticos foram validados em ambiente equivalente a producao.
 - Roadmap e docs refletem o estado real do repositorio.
-

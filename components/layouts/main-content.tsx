@@ -69,7 +69,7 @@ export function MainContent({ children }: MainContentProps) {
               <button
                 onClick={() => removeNotification(toast.id)}
                 className="text-muted-foreground hover:text-foreground cursor-pointer shrink-0 transition-colors p-0.5"
-                aria-label="Delete Notification"
+                aria-label="Remover notificação"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

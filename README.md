@@ -6,6 +6,8 @@ React Hook Form, Zod, Motion e Vitest.
 O projeto entrega uma experiencia SaaS demonstrativa com autenticacao simulada,
 dashboard, projetos, assinatura, configuracoes, componentes de UI e tema claro/escuro.
 A camada visual premium foi preservada: glassmorphism, microanimacoes e layout responsivo.
+Backend real, persistencia real e CI versionado ainda nao fazem parte desta
+fase; os fluxos usam mocks e estado em memoria.
 
 ## Stack
 
@@ -119,5 +121,7 @@ Servicos:
 
 - `services/api-client.ts` e `services/mock-service.ts` mantem o contrato de API para uma futura troca dos mocks por endpoints reais.
 - `lib/store.ts` concentra a simulacao atual de autenticacao, projetos, chaves de API, notificacoes, assinatura e logs.
+- Testes cobrem componentes base, tema, store, formularios criticos e
+  semantica acessivel de modais/dialogs.
 - `.vscode/settings.json` e opcional para execucao, mas fica versionado para compartilhar ajustes neutros do projeto no VS Code, como evitar falso positivo de regras CSS usadas pelo Tailwind.
 - O repositorio usa uma unica configuracao de ESLint: `eslint.config.mjs`.

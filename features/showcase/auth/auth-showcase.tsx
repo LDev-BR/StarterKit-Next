@@ -126,7 +126,7 @@ export function AuthShowcase() {
             Portal Corporativo.
           </h2>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-sm">
-            Para auditar o Zustand logflow, projetos estruturados, variáveis dinâmicas de banco de dados e simulações de API, autentique-se abaixo com uma conta real ou simulada.
+            Para auditar o Zustand logflow, projetos estruturados, parâmetros mockados e simulações de API, autentique-se abaixo com uma conta demonstrativa.
           </p>
 
           <div className="pt-4 space-y-3.5">

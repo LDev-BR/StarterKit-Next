@@ -47,6 +47,14 @@ Entregas recomendadas:
 - Limpeza de textos inconsistentes ou placeholders de demo que prejudiquem o
   starter kit.
 
+Progresso do fechamento enxuto:
+
+- Testes adicionados para store, auth, projetos, settings e overlays.
+- Componentes `Modal` e `Dialog` passaram a expor semantica acessivel de
+  dialogo.
+- Copies de showcase foram ajustadas para deixar claro que backend,
+  persistencia, billing e CI reais pertencem a fases futuras.
+
 ## Fase 2: desenho do backend e contratos
 
 Objetivo: preparar a troca de mocks por API real sem quebrar o frontend.

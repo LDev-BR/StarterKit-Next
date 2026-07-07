@@ -109,7 +109,11 @@ Minimo esperado:
 - Botoes com texto acessivel ou `aria-label`.
 - Inputs com `label`/`htmlFor` ou nome acessivel equivalente.
 - Erros de formulario conectados por `aria-describedby`.
+- Campos customizados, como `textarea`, `checkbox`, `select` e range, tambem
+  devem expor estado acessivel quando houver erro ou funcao nao obvia.
 - Dialogs e modais fecham por Escape quando aplicavel.
+- Dialogs e modais devem expor `role="dialog"`, `aria-modal`, nome e descricao
+  acessiveis.
 - Contraste aceitavel nos temas claro e escuro.
 - Navegacao por teclado nao fica bloqueada.
 
@@ -135,8 +139,8 @@ single route com tabs.
 - Adicionar dependencia para resolver classe CSS simples.
 - Criar outro sistema de tema.
 - Usar `any` para contornar tipagem.
+- Usar `title` como unico nome acessivel de botoes icon-only.
 - Colocar regras de negocio complexas direto em JSX grande.
 - Misturar backend real com mocks sem preservar contrato.
 - Recriar componentes ja presentes em `components/ui/`.
 - Remover microanimacoes ou glassmorphism sem motivo explicito.
-
