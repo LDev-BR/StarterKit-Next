@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isWindows = process.platform === 'win32';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000';
+const shouldManageWebServer = process.env.PLAYWRIGHT_MANAGE_WEB_SERVER !== '0';
 
 export default defineConfig({
   testDir: './e2e',
@@ -10,7 +12,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL,
     trace: 'on-first-retry',
   },
   projects: [
@@ -36,12 +38,16 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: isWindows ? 'pnpm.cmd run dev' : 'pnpm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: true,
-    stdout: 'ignore',
-    stderr: 'ignore',
-    timeout: 120_000,
-  },
+  ...(shouldManageWebServer
+    ? {
+        webServer: {
+          command: isWindows ? 'pnpm.cmd run dev' : 'pnpm run dev',
+          url: baseURL,
+          reuseExistingServer: true,
+          stdout: 'ignore' as const,
+          stderr: 'ignore' as const,
+          timeout: 120_000,
+        },
+      }
+    : {}),
 });

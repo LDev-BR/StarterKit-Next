@@ -61,9 +61,9 @@ confirmar que os links/caminhos citados existem. Para mudancas de codigo, rode a
 sequencia completa quando possivel. O Playwright fica em `e2e/` e usa apenas
 Chromium para validar desktop, tablet e mobile sem adicionar backend real.
 
-No Windows, se o `webServer` gerenciado pelo Playwright prender a arvore de
-processos, rode `pnpm.cmd run dev` em uma sessao separada e depois
-`pnpm.cmd run test:e2e`; a configuracao usa `reuseExistingServer`.
+O script `test:e2e` usa `scripts/run-playwright-e2e.mjs` para iniciar o dev
+server quando necessario, reutilizar `localhost:3000` se ele ja estiver ativo e
+encerrar apenas o servidor iniciado pelo proprio script.
 
 ## Referencias externas
 

@@ -83,6 +83,9 @@ pnpm run test:e2e
 No Windows, os mesmos comandos podem ser executados com `pnpm.cmd`. O Playwright
 usa Chromium apenas e valida landing, tema, login mock, navegacao principal,
 formulario de projetos e billing mockado em viewports desktop, tablet e mobile.
+O script `test:e2e` inicia o dev server quando necessario, reutiliza
+`localhost:3000` se ele ja estiver ativo e encerra apenas o servidor que ele
+mesmo iniciou.
 
 ## Roadmap
 

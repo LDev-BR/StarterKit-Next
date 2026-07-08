@@ -128,9 +128,12 @@ Testes existentes cobrem:
 `playwright.config.ts` define smoke E2E Chromium-only em `e2e/`, com projetos
 desktop, tablet e mobile. O teste cobre landing, tema, login mock, navegacao
 para projetos/billing/settings, validacao basica de formulario e billing
-mockado. Ele nao cria backend real nem persistencia. A configuracao usa
-`reuseExistingServer`; no Windows, a validacao local pode rodar com
-`pnpm.cmd run dev` ja ativo antes de `pnpm.cmd run test:e2e`.
+mockado. Ele nao cria backend real nem persistencia.
+
+`scripts/run-playwright-e2e.mjs` e o ponto de entrada de `pnpm run test:e2e`.
+Ele inicia o dev server quando necessario, reutiliza `localhost:3000` se ja
+houver servidor ativo, desativa o `webServer` gerenciado pelo Playwright via
+`PLAYWRIGHT_MANAGE_WEB_SERVER=0` e encerra apenas o servidor que ele iniciou.
 
 Novas regras de negocio no store, formularios ou contratos devem receber teste
 focado quando alterarem comportamento.

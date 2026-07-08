@@ -35,8 +35,9 @@ implementados sem pedido explicito.
 Observacao de 2026-07-08: comandos de qualidade passaram localmente com
 `pnpm.cmd`. O smoke Playwright Chromium passou em desktop, tablet e mobile
 cobrindo landing, tema, login mock, navegacao principal, validacao basica de
-projetos, billing mockado e settings. No Windows, a execucao validada usou
-`pnpm.cmd run dev` ja ativo para o Playwright reutilizar `localhost:3000`.
+projetos, billing mockado e settings. No Windows, `pnpm.cmd run test:e2e`
+gerencia o dev server por `scripts/run-playwright-e2e.mjs` e encerra a arvore
+de processos que ele mesmo iniciar.
 
 ## Qualidade de codigo
 
