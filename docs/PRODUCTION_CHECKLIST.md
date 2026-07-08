@@ -20,21 +20,23 @@ implementados sem pedido explicito.
 - [x] `pnpm run lint:types` passa.
 - [x] `pnpm test` passa.
 - [x] `pnpm run build` passa.
-- [ ] Landing renderiza em mobile e desktop.
+- [x] `pnpm run test:e2e` passa.
+- [x] Landing renderiza em mobile, tablet e desktop.
 - [x] Login/register mockados funcionam.
-- [ ] Dashboard nao quebra com dados mockados.
+- [x] Dashboard nao quebra com dados mockados.
 - [ ] Projetos permitem criar, filtrar e remover sem quebrar layout.
-- [ ] Billing alterna planos e ciclo visual corretamente.
+- [x] Billing alterna planos e ciclo visual corretamente.
 - [x] Settings atualiza perfil, config mock e API keys fake.
 - [x] Tema claro/escuro funciona e persiste.
 - [x] Notificacoes aparecem e podem ser limpas.
-- [ ] Bottom nav mobile nao sobrepoe conteudo critico.
+- [x] Bottom nav mobile nao sobrepoe conteudo critico no smoke mobile.
 - [ ] Textos longos nao estouram containers.
 
-Observacao de 2026-07-07: comandos de qualidade passaram localmente com
-`pnpm.cmd`. A verificacao visual mobile/desktop ficou pendente nesta sessao
-porque o Browser interno nao estava disponivel e Playwright nao esta instalado
-no projeto; o servidor Next existente respondeu HTTP 200 em `localhost:3000`.
+Observacao de 2026-07-08: comandos de qualidade passaram localmente com
+`pnpm.cmd`. O smoke Playwright Chromium passou em desktop, tablet e mobile
+cobrindo landing, tema, login mock, navegacao principal, validacao basica de
+projetos, billing mockado e settings. No Windows, a execucao validada usou
+`pnpm.cmd run dev` ja ativo para o Playwright reutilizar `localhost:3000`.
 
 ## Qualidade de codigo
 
@@ -42,8 +44,8 @@ no projeto; o servidor Next existente respondeu HTTP 200 em `localhost:3000`.
 - [x] Nenhum novo `any` introduzido.
 - [ ] Componentes reutilizaveis ficam em `components/ui`.
 - [ ] Logica de dominio nao fica escondida em JSX sem necessidade.
-- [ ] Dependencias novas foram justificadas e documentadas.
-- [ ] Arquivos gerados pelo Next, como `next-env.d.ts`, nao foram editados
+- [x] Dependencias novas foram justificadas e documentadas.
+- [x] Arquivos gerados pelo Next, como `next-env.d.ts`, nao foram editados
   manualmente.
 - [x] Documentacao em `docs/` foi atualizada quando contratos ou arquitetura
   mudaram.
@@ -58,6 +60,7 @@ no projeto; o servidor Next existente respondeu HTTP 200 em `localhost:3000`.
 - [ ] Estados loading, vazio e erro existem nos fluxos que consultam dados.
 - [x] Modais fecham por Escape e clique no backdrop quando aplicavel.
 - [ ] Layout foi verificado em pelo menos 375px, 768px, 1024px e desktop largo.
+- [x] Smoke Playwright verificou viewports Chromium desktop, tablet e mobile.
 
 ## Next.js e build
 

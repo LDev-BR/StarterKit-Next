@@ -194,6 +194,8 @@ export function AuthShowcase() {
                       <button
                         type="button"
                         onClick={() => setShowPass(!showPass)}
+                        aria-label={showPass ? 'Ocultar senha' : 'Mostrar senha'}
+                        aria-pressed={showPass}
                         className="absolute right-3.5 top-9.5 text-muted-foreground hover:text-foreground cursor-pointer"
                       >
                         {showPass ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}

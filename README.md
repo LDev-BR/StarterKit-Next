@@ -1,7 +1,7 @@
 # StarterKit Next
 
 Starter Kit frontend em Next.js, React, TypeScript, Tailwind CSS v4, Zustand,
-React Hook Form, Zod, Motion e Vitest.
+React Hook Form, Zod, Motion, Vitest e Playwright.
 
 O projeto entrega uma experiencia SaaS demonstrativa com autenticacao simulada,
 dashboard, projetos, assinatura, configuracoes, componentes de UI e tema claro/escuro.
@@ -18,7 +18,8 @@ fase; os fluxos usam mocks e estado em memoria.
 - Zustand para estado global
 - React Hook Form + Zod para formularios
 - Motion para animacoes
-- Vitest + Testing Library para testes
+- Vitest + Testing Library para testes unitarios e de componentes
+- Playwright Chromium para smoke E2E em desktop, tablet e mobile
 - Docker Compose com frontend e PostgreSQL local
 
 ## Estrutura
@@ -43,6 +44,7 @@ lib/                         Store Zustand e utilitarios
 providers/                   Providers de aplicacao
 services/                    Contratos e mock de API
 tests/                       Testes unitarios e setup do Vitest
+e2e/                         Smoke tests Playwright da validacao frontend
 types/                       Tipos compartilhados
 .vscode/                     Ajustes compartilhados do VS Code, sem impacto no runtime
 ```
@@ -74,7 +76,13 @@ pnpm run lint
 pnpm run lint:types
 pnpm test
 pnpm run build
+pnpm exec playwright install chromium
+pnpm run test:e2e
 ```
+
+No Windows, os mesmos comandos podem ser executados com `pnpm.cmd`. O Playwright
+usa Chromium apenas e valida landing, tema, login mock, navegacao principal,
+formulario de projetos e billing mockado em viewports desktop, tablet e mobile.
 
 ## Roadmap
 
@@ -123,5 +131,7 @@ Servicos:
 - `lib/store.ts` concentra a simulacao atual de autenticacao, projetos, chaves de API, notificacoes, assinatura e logs.
 - Testes cobrem componentes base, tema, store, formularios criticos e
   semantica acessivel de modais/dialogs.
+- Playwright cobre um smoke visual/funcional dos fluxos principais sem backend
+  real.
 - `.vscode/settings.json` e opcional para execucao, mas fica versionado para compartilhar ajustes neutros do projeto no VS Code, como evitar falso positivo de regras CSS usadas pelo Tailwind.
 - O repositorio usa uma unica configuracao de ESLint: `eslint.config.mjs`.

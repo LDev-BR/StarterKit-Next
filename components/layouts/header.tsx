@@ -110,9 +110,11 @@ export function Header() {
         {/* Left Section: Logo */}
         <div className="flex items-center gap-4 flex-1 justify-start">
           {/* Custom Glowing Gradient Logo as Branded Face of the App */}
-          <div 
-            onClick={() => setCurrentTab('dashboard')} 
-            className="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity shrink-0"
+          <button
+            type="button"
+            onClick={() => setCurrentTab('dashboard')}
+            aria-label="Ir para o painel"
+            className="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
           >
             <div className="shrink-0">
               <svg className="h-7 w-7 filter drop-shadow-[0_0_8px_rgba(0,132,255,0.3)]" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -148,7 +150,7 @@ export function Header() {
               <span className="text-xs font-black tracking-wider text-foreground uppercase leading-none">SaaS Starter</span>
               <span className="text-[8px] text-[#0084ff] font-extrabold uppercase tracking-wider leading-none mt-0.5">ESTRUTURA ATIVA</span>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Middle Section: Desktop Navigation Tabs */}
@@ -206,6 +208,9 @@ export function Header() {
                   setIsNotificationsOpen(!isNotificationsOpen);
                 }
               }}
+              aria-expanded={isNotificationsOpen || isMobileNotificationsOpen}
+              aria-haspopup="dialog"
+              aria-controls={isNotificationsOpen ? 'desktop-notifications-menu' : isMobileNotificationsOpen ? 'mobile-notifications-dialog' : undefined}
               className={cn(
                 "h-9 w-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer relative",
                 (isNotificationsOpen || isMobileNotificationsOpen) && "bg-muted text-foreground"
@@ -227,6 +232,9 @@ export function Header() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 10 }}
                     transition={{ duration: 0.15 }}
+                    id="desktop-notifications-menu"
+                    role="dialog"
+                    aria-label="Alertas ativos"
                     className="absolute right-0 mt-2 w-80 rounded-xl border border-border bg-card shadow-xl p-3.5 origin-top-right z-50 text-left"
                   >
                     <div className="flex items-center justify-between pb-2.5 border-b border-border mb-2.5">
@@ -271,6 +279,9 @@ export function Header() {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex items-center gap-2 border border-border/80 rounded-full p-0.5 hover:bg-muted/40 transition-all cursor-pointer relative"
               aria-label="Menu do Usuário"
+              aria-expanded={isProfileOpen}
+              aria-haspopup="dialog"
+              aria-controls={isProfileOpen ? 'user-profile-menu' : undefined}
             >
               {/* Profile Image Miniature Wrapper */}
               <div className="relative h-8 w-8 rounded-full border border-primary/25 bg-primary/10 flex items-center justify-center font-black text-xs uppercase text-primary shrink-0 transition-transform duration-200 active:scale-95 shadow-sm overflow-hidden">
@@ -287,6 +298,9 @@ export function Header() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                   transition={{ duration: 0.15 }}
+                  id="user-profile-menu"
+                  role="dialog"
+                  aria-label="Menu do usuário"
                   className="absolute right-0 mt-2 w-64 rounded-2xl border border-border bg-card shadow-2xl p-4 origin-top-right z-50 text-left"
                 >
                   {/* Account Summary */}

@@ -64,7 +64,7 @@ export function ShowcaseDashboard() {
     addLog('Varredura manual efetuada', 'Monitoramento Geral', 'success');
   };
 
-  const triggerCreateOrder = () => {
+  const triggerCreateProject = () => {
     addNotification('Prompt: Acesse a aba "Projetos" para cadastrar um novo!', 'success');
   };
 
@@ -88,7 +88,7 @@ export function ShowcaseDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex flex-col gap-1">
           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest leading-none">
-            Olá, {user?.name.split(' ')[0] || 'Felix'},
+            Olá, {user?.name.split(' ')[0] || 'Admin'},
           </p>
           <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tight flex items-center gap-2">
             👋 Bem-vindo de volta!
@@ -98,12 +98,17 @@ export function ShowcaseDashboard() {
         {/* Date Filters & Main Action CTA exactly as in image */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Today / Week filter capsule button */}
-          <div className="inline-flex items-center p-1 rounded-xl bg-card border border-border bg-neutral-100/50 dark:bg-neutral-800/25">
+          <div
+            role="group"
+            aria-label="Intervalo do dashboard"
+            className="inline-flex items-center p-1 rounded-xl bg-card border border-border bg-neutral-100/50 dark:bg-neutral-800/25"
+          >
             <button
               onClick={() => {
                 setTimeframe('today');
                 addNotification('Filtro alterado para: Hoje', 'info');
               }}
+              aria-pressed={timeframe === 'today'}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 timeframe === 'today'
                   ? 'bg-white dark:bg-neutral-900 text-foreground shadow-sm'
@@ -117,6 +122,7 @@ export function ShowcaseDashboard() {
                 setTimeframe('week');
                 addNotification('Filtro alterado para: Semana', 'info');
               }}
+              aria-pressed={timeframe === 'week'}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 timeframe === 'week'
                   ? 'bg-white dark:bg-neutral-900 text-foreground shadow-sm'
@@ -136,13 +142,13 @@ export function ShowcaseDashboard() {
             <Calendar size={15} />
           </button>
 
-          {/* "+ Create new order" sky blue button representing the image exactly */}
+          {/* Primary project CTA */}
           <button
-            onClick={triggerCreateOrder}
+            onClick={triggerCreateProject}
             className="h-9.5 px-4.5 rounded-xl bg-[#0084ff] hover:bg-[#0072f5] text-white text-xs font-bold transition-all shadow-md shadow-[#0084ff]/10 hover:shadow-[#0084ff]/20 active:scale-98 cursor-pointer flex items-center gap-1.5"
           >
             <Plus size={15} className="stroke-[3]" />
-            <span>Criar novo pedido</span>
+            <span>Criar novo projeto</span>
           </button>
         </div>
       </div>
@@ -193,26 +199,32 @@ export function ShowcaseDashboard() {
             </div>
 
             {/* Total Revenue / Total Expenditure pill selectors */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-neutral-100/60 dark:bg-neutral-800/30 border border-border self-start">
+            <div
+              role="group"
+              aria-label="Tipo de orçamento"
+              className="flex items-center gap-1.5 p-1 rounded-xl bg-neutral-100/60 dark:bg-neutral-800/30 border border-border self-start"
+            >
               <button
                 onClick={() => setBalanceFilter('revenue')}
+                aria-pressed={balanceFilter === 'revenue'}
                 className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest transition-all ${
                   balanceFilter === 'revenue'
                     ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                Receita total
+                Receita projetada
               </button>
               <button
                 onClick={() => setBalanceFilter('expenditure')}
+                aria-pressed={balanceFilter === 'expenditure'}
                 className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest transition-all ${
                   balanceFilter === 'expenditure'
                     ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                Despesa total
+                Despesa estimada
               </button>
             </div>
           </div>
@@ -295,7 +307,7 @@ export function ShowcaseDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-neutral-100/10 dark:bg-neutral-800/10">
           
           <div className="p-5 flex flex-col text-left space-y-1.5 border-r border-border md:border-r">
-            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Loja física</span>
+            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Projetos ativos</span>
             <div className="flex items-center gap-2">
               <span className="text-base font-black text-foreground">$3.236</span>
               <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-emerald-500">
@@ -305,7 +317,7 @@ export function ShowcaseDashboard() {
           </div>
 
           <div className="p-5 flex flex-col text-left space-y-1.5 border-r border-border md:border-r">
-            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Loja online</span>
+            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Uso de API</span>
             <div className="flex items-center gap-2">
               <span className="text-base font-black text-foreground">$3.764</span>
               <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-rose-500">
@@ -315,7 +327,7 @@ export function ShowcaseDashboard() {
           </div>
 
           <div className="p-5 flex flex-col text-left space-y-1.5 border-r border-border md:border-r">
-            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Cobrança</span>
+            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Budget mock</span>
             <div className="flex items-center gap-2">
               <span className="text-base font-black text-foreground">$1.800</span>
               <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-emerald-500">
@@ -325,7 +337,7 @@ export function ShowcaseDashboard() {
           </div>
 
           <div className="p-5 flex flex-col text-left space-y-1.5">
-            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Outros valores</span>
+            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Alertas visuais</span>
             <div className="flex items-center gap-2">
               <span className="text-base font-black text-foreground">$1.200</span>
               <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-rose-500">
@@ -344,7 +356,7 @@ export function ShowcaseDashboard() {
         <Card id="saas-order-concentric-card" className="border border-border bg-card rounded-2xl p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-4 border-b border-border/40">
-              <h3 className="text-sm font-black uppercase tracking-wider text-foreground">Pedidos</h3>
+              <h3 className="text-sm font-black uppercase tracking-wider text-foreground">Projetos</h3>
               <button 
                 onClick={() => {
                   setCurrentTab('projects');
@@ -361,7 +373,7 @@ export function ShowcaseDashboard() {
               {/* Left stats column */}
               <div className="space-y-4 text-left">
                 <div className="space-y-0.5">
-                  <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest leading-none">Total de pedidos</p>
+                  <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest leading-none">Projetos monitorados</p>
                   <div className="flex items-center gap-1.5">
                     <span className="text-3xl font-black text-foreground">86</span>
                     <span className="text-emerald-500 text-xs font-black">↗</span>
@@ -485,14 +497,14 @@ export function ShowcaseDashboard() {
             </div>
           </div>
           <div className="text-[10px] text-muted-foreground font-semibold uppercase leading-tight pt-3 border-t border-border/40 text-left">
-            Análise em tempo real de fluxos e conversões
+            Análise visual de fluxos SaaS e validação de estados
           </div>
         </Card>
 
-        {/* Recent orders listing with beautiful glass blur overlay "Unlock Pro" (col-span-2) */}
+        {/* Recent project listing with glass blur overlay "Unlock Pro" (col-span-2) */}
         <Card id="saas-recent-orders-locked-card" className="border border-border bg-card rounded-2xl p-6 lg:col-span-2 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between pb-4 border-b border-border/40">
-            <h3 className="text-sm font-black uppercase tracking-wider text-foreground">Pedidos recentes</h3>
+            <h3 className="text-sm font-black uppercase tracking-wider text-foreground">Projetos recentes</h3>
             <button 
               onClick={() => {
                 addNotification('Desbloqueie o plano Pro para visualizar mais detalhes.', 'warning');
@@ -540,27 +552,27 @@ export function ShowcaseDashboard() {
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-border/50 text-muted-foreground uppercase text-[9px] font-black tracking-widest bg-muted/20">
-                    <th className="py-2.5 px-3">Cliente</th>
-                    <th className="py-2.5 px-3">Nome do Produto</th>
+                    <th className="py-2.5 px-3">Responsável</th>
+                    <th className="py-2.5 px-3">Projeto</th>
                     <th className="py-2.5 px-3">Status</th>
                     <th className="py-2.5 px-3 text-right">Valor</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-border/20">
-                    <td className="py-3 px-3 font-bold">Ronald Richards</td>
+                    <td className="py-3 px-3 font-bold">Admin Starter</td>
                     <td className="py-3 px-3">Ômega API Gateway</td>
                     <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-green-500/15 text-green-500 uppercase text-[9px] font-bold">Sucesso</span></td>
                     <td className="py-3 px-3 text-right font-mono font-bold">$1,450</td>
                   </tr>
                   <tr className="border-b border-border/20">
-                    <td className="py-3 px-3 font-bold">Annette Black</td>
+                    <td className="py-3 px-3 font-bold">Equipe Plataforma</td>
                     <td className="py-3 px-3">Kubernetes Multi-Replica</td>
                     <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-amber-500/15 text-amber-500 uppercase text-[9px] font-bold">Em espera</span></td>
                     <td className="py-3 px-3 text-right font-mono font-bold">$3,100</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-3 font-bold">Albert Flores</td>
+                    <td className="py-3 px-3 font-bold">Equipe Dados</td>
                     <td className="py-3 px-3">Persistência mock multi-node</td>
                     <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-500 uppercase text-[9px] font-bold">Processando</span></td>
                     <td className="py-3 px-3 text-right font-mono font-bold font-black">$450</td>
@@ -572,7 +584,7 @@ export function ShowcaseDashboard() {
           </div>
 
           <div className="text-[10px] text-muted-foreground font-semibold uppercase leading-none pt-3.5 border-t border-border/40 mt-auto text-left">
-            Gateway local de transações em modo de demonstração
+            Gateway visual de projetos em modo de demonstração
           </div>
         </Card>
 

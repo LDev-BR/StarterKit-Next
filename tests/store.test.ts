@@ -107,8 +107,9 @@ describe('useAppStore', () => {
 
     const key = useAppStore.getState().generateApiKey('Preview Gateway');
 
-    expect(key).toMatch(/^sk_live_/);
+    expect(key).toMatch(/^sk_mock_/);
     expect(useAppStore.getState().apiKeys).toHaveLength(initialKeyCount + 1);
+    expect(useAppStore.getState().apiKeys.every((apiKey) => apiKey.key.startsWith('sk_mock_'))).toBe(true);
     expect(useAppStore.getState().apiKeys[0]).toMatchObject({
       name: 'Preview Gateway',
       lastUsed: 'Nunca',

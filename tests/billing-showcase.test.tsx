@@ -33,7 +33,9 @@ describe('BillingShowcase', () => {
     expect(storageMeter).toHaveAttribute('aria-valuenow', '100');
     expect(storageMeter).toHaveAttribute('aria-valuetext', '1.2 de 1 GB');
 
-    const seatsMeter = screen.getByRole('progressbar', { name: /uso de collaborator seats/i });
+    expect(screen.getByText(/assentos ativos/i)).toBeInTheDocument();
+
+    const seatsMeter = screen.getByRole('progressbar', { name: /uso de assentos ativos/i });
     expect(seatsMeter).toHaveAttribute('aria-valuenow', '100');
     expect(seatsMeter).toHaveAttribute('aria-valuetext', '1 de 1 assentos ativos');
   });

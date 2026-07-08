@@ -246,15 +246,15 @@ export const useAppStore = create<AppStateStore>((set, get) => ({
   apiKeys: [
     {
       id: 'key-1',
-      name: 'Produção Primária',
-      key: 'sk_live_51Nv9uG1S77f7v_geometric_balance_key_prod_a',
+      name: 'Ambiente Mock Primário',
+      key: 'sk_mock_51Nv9uG1S77f7v_visual_validation_key_a',
       createdAt: '2026-06-05T09:12:00Z',
       lastUsed: '2026-06-18T10:20:00Z',
     },
     {
       id: 'key-2',
-      name: 'Staging Sandbox',
-      key: 'sk_test_51Nv9uG1S77f7v_geometric_balance_key_dev_b',
+      name: 'Sandbox Mock',
+      key: 'sk_mock_51Nv9uG1S77f7v_visual_validation_key_b',
       createdAt: '2026-06-12T11:45:00Z',
       lastUsed: '2026-06-18T11:15:00Z',
     },
@@ -264,7 +264,7 @@ export const useAppStore = create<AppStateStore>((set, get) => ({
     const randomHex = Array.from({ length: 32 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
-    const key = `sk_live_${randomHex.substring(0, 8)}_${randomHex.substring(8, 24)}`;
+    const key = `sk_mock_${randomHex.substring(0, 8)}_${randomHex.substring(8, 24)}`;
     const createdAt = new Date().toISOString();
     const newKey: ApiKey = { id, name, key, createdAt, lastUsed: 'Nunca' };
     set((state) => ({

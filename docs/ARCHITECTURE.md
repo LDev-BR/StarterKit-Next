@@ -18,7 +18,8 @@ para substituir mocks por backend real no futuro.
 - Zustand para estado global client-side.
 - React Hook Form + Zod para formularios.
 - Motion para microanimacoes.
-- Vitest + Testing Library para testes.
+- Vitest + Testing Library para testes unitarios e de componentes.
+- Playwright Chromium para smoke E2E frontend em desktop, tablet e mobile.
 - Docker e Docker Compose para ambiente local.
 
 ## Fluxo de renderizacao
@@ -61,6 +62,7 @@ lib/                         Store Zustand e utilitarios
 providers/                   Providers globais
 services/                    Contrato de API e mock service
 tests/                       Testes Vitest e setup
+e2e/                         Smoke tests Playwright da validacao frontend
 types/                       Tipos compartilhados de contratos
 ```
 
@@ -120,6 +122,15 @@ Testes existentes cobrem:
   configuracao, API keys, assinatura e uso.
 - `Modal` e `Dialog` com semantica acessivel de dialogo.
 - Formularios criticos de auth, projetos e settings.
+- Semantica acessivel do header, drawer mobile, controles segmentados do
+  dashboard e medidores de billing.
+
+`playwright.config.ts` define smoke E2E Chromium-only em `e2e/`, com projetos
+desktop, tablet e mobile. O teste cobre landing, tema, login mock, navegacao
+para projetos/billing/settings, validacao basica de formulario e billing
+mockado. Ele nao cria backend real nem persistencia. A configuracao usa
+`reuseExistingServer`; no Windows, a validacao local pode rodar com
+`pnpm.cmd run dev` ja ativo antes de `pnpm.cmd run test:e2e`.
 
 Novas regras de negocio no store, formularios ou contratos devem receber teste
 focado quando alterarem comportamento.

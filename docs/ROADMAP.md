@@ -43,20 +43,20 @@ Trabalho permitido:
 
 Criterio de saida:
 
-- [ ] Fluxos principais funcionam sem erro em mobile e desktop.
-- [ ] Tema claro/escuro consistente.
-- [ ] Formularios validam e exibem feedback corretamente.
+- [x] Fluxos principais funcionam sem erro em mobile, tablet e desktop.
+- [x] Tema claro/escuro consistente.
+- [x] Formularios validam e exibem feedback corretamente.
 - [ ] Estados vazio, loading e erro existem onde fazem sentido.
-- [ ] `pnpm run lint`, `pnpm run lint:types`, `pnpm test` e `pnpm run build`
-  passam.
-- [ ] Documentacao em `docs/` reflete a arquitetura real.
+- [x] `pnpm run lint`, `pnpm run lint:types`, `pnpm test`,
+  `pnpm run build` e `pnpm run test:e2e` passam.
+- [x] Documentacao em `docs/` reflete a arquitetura real.
 
 Entregas recomendadas:
 
-- [ ] Testes adicionais para store e formularios criticos.
-- [ ] Revisao de acessibilidade com teclado.
-- [ ] Verificacao visual em viewport mobile e desktop.
-- [ ] Limpeza de textos inconsistentes ou placeholders de demo que prejudiquem
+- [x] Testes adicionais para store e formularios criticos.
+- [x] Revisao de acessibilidade com teclado.
+- [x] Verificacao visual em viewports mobile, tablet e desktop.
+- [x] Limpeza de textos inconsistentes ou placeholders de demo que prejudiquem
   o starter kit.
 
 Progresso do fechamento enxuto:
@@ -66,6 +66,11 @@ Progresso do fechamento enxuto:
   dialogo.
 - [x] Copies de showcase foram ajustadas para deixar claro que backend,
   persistencia, billing e CI reais pertencem a fases futuras.
+- [x] Header, drawer mobile, toggle de senha, medidores de billing e controles
+  segmentados ganharam semantica acessivel adicional.
+- [x] API keys mockadas usam prefixo `sk_mock_` para evitar aparencia de segredo
+  real.
+- [x] Playwright Chromium foi adicionado e passou em desktop, tablet e mobile.
 
 ## Fase 2: desenho do backend e contratos
 
@@ -165,11 +170,11 @@ Trabalho esperado:
 
 ## Backlog tecnico util
 
-- [ ] Adicionar testes para `lib/store.ts`.
-- [ ] Adicionar testes de formularios para projetos, auth e settings.
+- [x] Adicionar testes para `lib/store.ts`.
+- [x] Adicionar testes de formularios para projetos, auth e settings.
 - [ ] Avaliar se `Sidebar` deve ser removida, reativada ou documentada como
   opcao de layout.
 - [ ] Extrair partes muito grandes de showcases quando uma nova tarefa tocar
   nelas.
 - [ ] Adicionar CI quando o fluxo de validacao estabilizar.
-- [ ] Adicionar Playwright ou fluxo E2E quando as telas estiverem estaveis.
+- [x] Adicionar Playwright ou fluxo E2E quando as telas estiverem estaveis.

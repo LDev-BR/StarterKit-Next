@@ -89,6 +89,8 @@ Antes de finalizar qualquer UI, confira:
 - Botoes mantem area de toque adequada.
 - Overlays nao conflitam com bottom nav.
 - Tema claro e escuro continuam coerentes.
+- Smoke Playwright passa nos projetos desktop, tablet e mobile quando a mudanca
+  toca fluxos principais.
 
 ## Animacoes
 
@@ -119,6 +121,10 @@ Minimo esperado:
 
 Se a tarefa alterar componentes base, valide com Testing Library usando queries
 por role/texto acessivel.
+
+Quando a tarefa alterar navegacao, landing, auth mock, projetos, billing ou
+settings, rode tambem `pnpm run test:e2e` para cobrir o smoke responsivo em
+Chromium.
 
 ## Padrao para novas telas de showcase
 

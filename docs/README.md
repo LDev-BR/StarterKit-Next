@@ -36,7 +36,8 @@ do Next neste repositorio.
 
 O repositorio e um starter kit frontend em Next.js com experiencia SaaS demo:
 landing, autenticacao simulada, dashboard, projetos, assinatura, configuracoes,
-tema claro/escuro, componentes reutilizaveis, mocks e testes Vitest.
+tema claro/escuro, componentes reutilizaveis, mocks, testes Vitest e smoke
+Playwright Chromium.
 
 O foco atual e validar frontend: fluxos, responsividade, visual, contratos de
 mock e qualidade de build. Backend real, PostgreSQL real, Railway CD e monorepo
@@ -51,11 +52,18 @@ pnpm run lint
 pnpm run lint:types
 pnpm test
 pnpm run build
+pnpm exec playwright install chromium
+pnpm run test:e2e
 ```
 
 Para mudancas pequenas em docs, a validacao minima e ler os arquivos alterados e
 confirmar que os links/caminhos citados existem. Para mudancas de codigo, rode a
-sequencia completa quando possivel.
+sequencia completa quando possivel. O Playwright fica em `e2e/` e usa apenas
+Chromium para validar desktop, tablet e mobile sem adicionar backend real.
+
+No Windows, se o `webServer` gerenciado pelo Playwright prender a arvore de
+processos, rode `pnpm.cmd run dev` em uma sessao separada e depois
+`pnpm.cmd run test:e2e`; a configuracao usa `reuseExistingServer`.
 
 ## Referencias externas
 
@@ -67,3 +75,4 @@ prefira primeiro `node_modules/next/dist/docs/`.
 - Next.js Production Checklist: https://nextjs.org/docs/app/guides/production-checklist
 - Next.js Deploying: https://nextjs.org/docs/app/getting-started/deploying
 - Next.js Vitest: https://nextjs.org/docs/app/guides/testing/vitest
+- Next.js Playwright: https://nextjs.org/docs/app/guides/testing/playwright

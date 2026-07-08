@@ -118,7 +118,7 @@ export function BillingShowcase() {
   };
 
   const apiLimit = subscription === 'free' ? 10000 : subscription === 'pro' ? 100000 : 1000000;
-  const apiLimitLabel = subscription === 'free' ? '10k' : subscription === 'pro' ? '100k' : 'Ilimitado';
+  const apiLimitLabel = subscription === 'free' ? '10k' : subscription === 'pro' ? '100k' : '1 mi';
   const apiUsagePercent = (apiUsage / apiLimit) * 100;
   const apiProgressValue = clampProgressValue(apiUsagePercent);
   const dbLimit = subscription === 'free' ? 1 : subscription === 'pro' ? 10 : 100;
@@ -185,7 +185,7 @@ export function BillingShowcase() {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/40">
               <span className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Cpu className="h-4 w-4 text-blue-500" /> API Requests volume
+                <Cpu className="h-4 w-4 text-blue-500" /> Volume de API requests
               </span>
               <span className="text-[10px] bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded font-bold">
                 {apiUsagePercent.toFixed(0)}%
@@ -275,7 +275,7 @@ export function BillingShowcase() {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/40">
               <span className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Users className="h-4 w-4 text-emerald-500" /> Collaborator Seats
+                <Users className="h-4 w-4 text-emerald-500" /> Assentos ativos
               </span>
               <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded font-bold">
                 {seatsUsagePercent.toFixed(0)}%
@@ -285,19 +285,19 @@ export function BillingShowcase() {
             <div className="space-y-1">
               <div className="flex justify-between items-baseline">
                 <span className="text-2xl font-black text-foreground">
-                  {activeSeats} Seat
+                  {activeSeats} {activeSeats === 1 ? 'assento' : 'assentos'}
                 </span>
                 <span className="text-xs text-muted-foreground font-semibold">
                   / {seatsLimit} ativos
                 </span>
               </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">Membros da equipe com acesso JWT</p>
+              <p className="text-[10px] text-muted-foreground font-semibold">Membros da equipe com sessão mockada</p>
             </div>
 
             {/* Custom tailored progress bar */}
             <div
               role="progressbar"
-              aria-label="Uso de collaborator seats"
+              aria-label="Uso de assentos ativos"
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={seatsProgressValue}
@@ -410,7 +410,7 @@ export function BillingShowcase() {
                 <div className="flex justify-between text-[8px] uppercase font-black tracking-widest text-neutral-400 mt-2">
                   <div>
                     <span className="block font-semibold">Titular</span>
-                    <span className="text-white text-[9px]">{user?.name || 'Felix the CAT'}</span>
+                <span className="text-white text-[9px]">{user?.name || 'Admin Starter'}</span>
                   </div>
                   <div>
                     <span className="block font-semibold">Expira</span>
@@ -436,7 +436,7 @@ export function BillingShowcase() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => addNotification('Redirecionando para portal do Stripe (demonstração)...', 'info')}
+              onClick={() => addNotification('Abrindo portal de cobrança mockado para demonstração...', 'info')}
               className="w-full text-[10px] font-extrabold uppercase tracking-wide cursor-pointer rounded-xl h-9"
             >
               Alterar Cartão

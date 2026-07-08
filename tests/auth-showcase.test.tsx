@@ -30,6 +30,24 @@ describe('AuthShowcase forms', () => {
     expect(useAppStore.getState().user).toBeNull();
   });
 
+  it('exposes the password visibility toggle with state', async () => {
+    const user = userEvent.setup();
+    useAppStore.getState().setAuthView('login');
+
+    render(<AuthShowcase />);
+
+    const passwordField = screen.getByLabelText(/sua senha de acesso/i);
+    const toggle = screen.getByRole('button', { name: /mostrar senha/i });
+
+    expect(passwordField).toHaveAttribute('type', 'password');
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+
+    await user.click(toggle);
+
+    expect(passwordField).toHaveAttribute('type', 'text');
+    expect(screen.getByRole('button', { name: /ocultar senha/i })).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('registers a valid mock account and reports success', async () => {
     const user = userEvent.setup();
     useAppStore.getState().setAuthView('register');

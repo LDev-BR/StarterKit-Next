@@ -34,9 +34,9 @@ instalada do pacote.
 
 | Tipo de tarefa | Leia antes | Arquivos provaveis | Validacao minima |
 | --- | --- | --- | --- |
-| Ajuste visual ou responsivo | `FRONTEND_PATTERNS.md` | `features/showcase/**`, `components/**`, `app/globals.css` | `pnpm run lint`, `pnpm run lint:types`, browser quando houver UI |
+| Ajuste visual ou responsivo | `FRONTEND_PATTERNS.md` | `features/showcase/**`, `components/**`, `app/globals.css` | `pnpm run lint`, `pnpm run lint:types`, `pnpm run test:e2e` quando tocar fluxo principal |
 | Novo componente reutilizavel | `FRONTEND_PATTERNS.md`, `ARCHITECTURE.md` | `components/ui/**`, `tests/**` | teste focado, lint, typecheck |
-| Fluxo de dashboard/projetos/billing/settings | `ARCHITECTURE.md`, `DATA_AND_API_CONTRACTS.md` | `features/showcase/**`, `lib/store.ts` | teste ou verificacao manual do fluxo, lint, typecheck |
+| Fluxo de dashboard/projetos/billing/settings | `ARCHITECTURE.md`, `DATA_AND_API_CONTRACTS.md` | `features/showcase/**`, `lib/store.ts` | teste focado, lint, typecheck e smoke Playwright quando o fluxo principal mudar |
 | Mock, estado ou contrato API | `DATA_AND_API_CONTRACTS.md` | `lib/store.ts`, `services/**`, `types/**` | teste focado, lint, typecheck |
 | Roadmap, checklist ou docs | `docs/README.md` | `docs/**`, `README.md`, `AGENTS.md` | revisar links e consistencia com escopo |
 | Build/deploy/Docker | `PRODUCTION_CHECKLIST.md`, docs locais do Next | `next.config.ts`, `Dockerfile`, `docker-compose.yml`, `.env.example` | `pnpm run build` e teste do container quando aplicavel |
@@ -82,6 +82,9 @@ Nao fazer: backend real, nova dependencia, nova rota.
 Validacao: pnpm run lint, pnpm run lint:types, teste focado se alterar logica.
 Aceite: em mobile e desktop, lista vazia mostra EmptyState e CTA sem quebrar o layout.
 ```
+
+Para fechamento de validacao frontend, acrescente `pnpm test`, `pnpm run build`
+e `pnpm run test:e2e`. No Windows, use `pnpm.cmd` quando necessario.
 
 ## Definicao de pronto
 

@@ -40,9 +40,9 @@ export function MainContent({ children }: MainContentProps) {
         <div>Construído com Princípios SOLID & DRY</div>
         <div className="flex gap-4">
           <span>ESLint</span>
-          <span>Prettier</span>
-          <span>Husky</span>
+          <span>TypeScript</span>
           <span>Vitest</span>
+          <span>Playwright</span>
         </div>
       </footer>
 
@@ -93,6 +93,10 @@ export function MainContent({ children }: MainContentProps) {
 
             {/* Sliding Drawer element */}
             <motion.div
+              id="mobile-notifications-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="mobile-notifications-title"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -105,11 +109,12 @@ export function MainContent({ children }: MainContentProps) {
               {/* Header Title */}
               <div className="flex items-center justify-between pb-3.5 border-b border-border mb-4 select-none shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black uppercase tracking-widest text-[#0084ff]">Avisos Operacionais</span>
+                  <span id="mobile-notifications-title" className="text-xs font-black uppercase tracking-widest text-[#0084ff]">Avisos Operacionais</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setMobileNotificationsOpen(false)}
+                  aria-label="Fechar avisos operacionais"
                   className="p-1 px-2.5 rounded-lg bg-muted text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   Fechar

@@ -84,8 +84,10 @@ interface ApiKey {
 }
 ```
 
-As chaves atuais sao demonstrativas. Nunca trate esses valores como segredo real
-nem copie esse padrao para producao.
+As chaves atuais sao demonstrativas e usam prefixo `sk_mock_`. Nunca trate
+esses valores como segredo real nem copie esse padrao para producao. A interface
+publica permanece `ApiKey.key: string`; o prefixo serve apenas para deixar claro
+que o valor e seguro para demo.
 
 ### Assinatura e uso
 

@@ -20,6 +20,10 @@ import {
 export default function Home() {
   const { user, authView, currentTab, setCurrentTab } = useAppStore();
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [authView, currentTab, user]);
+
   // Unified menu items representing real-world standard options
   const menuItems = [
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard },
