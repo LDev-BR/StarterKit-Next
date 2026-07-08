@@ -50,7 +50,7 @@ export function MainContent({ children }: MainContentProps) {
       </footer>
 
       {/* Notification Toast System overlay */}
-      <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-50 flex flex-col gap-2.5 md:bottom-6 md:left-auto md:right-6 md:max-w-sm">
+      <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-50 flex flex-col gap-2.5 xl:bottom-6 xl:left-auto xl:right-6 xl:max-w-sm">
         <AnimatePresence>
           {notifications.map((toast) => (
             <motion.div

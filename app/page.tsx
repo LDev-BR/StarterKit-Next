@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div
       id="saas-app-root"
-      className="flex min-h-screen w-full bg-background pb-[calc(4rem+env(safe-area-inset-bottom))] font-sans text-foreground antialiased transition-colors md:pb-0"
+      className="flex min-h-screen w-full bg-background pb-[calc(4rem+env(safe-area-inset-bottom))] font-sans text-foreground antialiased transition-colors xl:pb-0"
     >
       {/* Main column layout shell */}
       <MainContent>
@@ -65,7 +65,7 @@ export default function Home() {
       <nav
         id="mobile-bottom-nav"
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-center justify-around border-t border-border bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-lg backdrop-blur-md md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-center justify-around border-t border-border bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-lg backdrop-blur-md xl:hidden"
       >
         {APP_NAV_ITEMS.map((item) => {
           const Icon = item.icon;

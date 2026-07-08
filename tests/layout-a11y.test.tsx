@@ -43,6 +43,8 @@ describe('Application layout accessibility', () => {
     await user.click(profileTrigger);
 
     expect(profileTrigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.queryByText(/dark mode/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /alternar modo escuro/i })).not.toBeInTheDocument();
   });
 
   it('exposes the mobile notifications drawer as a named modal dialog', async () => {

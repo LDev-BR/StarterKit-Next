@@ -49,6 +49,26 @@ async function expectFocusedElementVisible(page: Page) {
     .toBe(true);
 }
 
+async function expectResponsiveNavigationMode(page: Page) {
+  const viewport = page.viewportSize();
+
+  if (!viewport) {
+    return;
+  }
+
+  const desktopNav = page.locator('#desktop-primary-nav');
+  const bottomNav = page.locator('#mobile-bottom-nav');
+
+  if (viewport.width < 1280) {
+    await expect(desktopNav).toBeHidden();
+    await expect(bottomNav).toBeVisible();
+    return;
+  }
+
+  await expect(desktopNav).toBeVisible();
+  await expect(bottomNav).toBeHidden();
+}
+
 test('validates the main frontend flows without framework errors', async ({ page }) => {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
@@ -66,6 +86,7 @@ test('validates the main frontend flows without framework errors', async ({ page
 
   await expect(page).toHaveTitle(/Frontend Starter Kit/i);
   await expect(page.getByRole('heading', { name: /Kit de Partida Front-End/i })).toBeVisible();
+  await expect(page.getByText(/StarterKit Console/i)).toHaveCount(0);
   await expectNoFrameworkOverlay(page);
   await expectNoHorizontalOverflow(page);
   await page.keyboard.press('Tab');
@@ -80,6 +101,7 @@ test('validates the main frontend flows without framework errors', async ({ page
   await expectPageAtTop(page);
   await expectNoFrameworkOverlay(page);
   await expectNoHorizontalOverflow(page);
+  await expectResponsiveNavigationMode(page);
   await page.keyboard.press('Tab');
   await expectFocusedElementVisible(page);
 

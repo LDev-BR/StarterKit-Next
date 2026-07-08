@@ -11,15 +11,12 @@ import {
   Layers, 
   Cpu, 
   Terminal, 
-  Globe, 
   Database,
-  Lock, 
   ChevronDown, 
   Code,
   Shield, 
   Workflow, 
   Sparkles,
-  RefreshCw,
   Server,
   Check
 } from 'lucide-react';
@@ -244,7 +241,7 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 mx-auto flex min-h-[calc(88svh-4rem)] max-w-7xl flex-col items-center justify-center px-4 py-8 text-center md:px-8 md:py-10">
+      <section className="relative z-10 mx-auto flex min-h-[calc(76svh-4rem)] max-w-7xl flex-col items-center justify-center px-4 py-10 text-center md:px-8 md:py-14">
         {/* Spacer to push content down for perfect alignment */}
         <div className="hidden md:block h-6" />
 
@@ -312,131 +309,7 @@ export function LandingPage() {
             </button>
           </motion.div>
 
-          <motion.div
-            aria-label="Prévia do painel SaaS Starter"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.55 }}
-            className="w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-card/80 text-left shadow-lg backdrop-blur-sm"
-          >
-            <div className="flex items-center justify-between border-b border-border/70 bg-muted/35 px-4 py-3">
-              <div className="flex min-w-0 items-center gap-2">
-                <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                <span className="truncate text-[10px] font-black uppercase tracking-widest text-foreground">
-                  StarterKit Console
-                </span>
-              </div>
-              <span className="hidden text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:inline">
-                Next.js 16 + TypeScript
-              </span>
-            </div>
-
-            <div className="grid gap-0 md:grid-cols-[10rem_1fr]">
-              <div className="hidden border-r border-border/70 bg-muted/20 p-3 md:block">
-                {['Painel', 'Projetos', 'Assinatura', 'Config'].map((item, index) => (
-                  <div
-                    key={item}
-                    className={`mb-1 rounded-lg px-3 py-2 text-[10px] font-black uppercase tracking-wider ${
-                      index === 0 ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
-                    }`}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="min-w-0 p-3 sm:p-4">
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {[
-                    { icon: Globe, label: 'Projetos', value: '12 ativos' },
-                    { icon: RefreshCw, label: 'Build', value: 'Verificado' },
-                    { icon: Lock, label: 'Mock API', value: 'Isolada' },
-                  ].map((item) => {
-                    const Icon = item.icon;
-
-                    return (
-                      <div key={item.label} className="min-w-0 rounded-lg border border-border/70 bg-background/60 p-3">
-                        <div className="flex items-center gap-2 text-primary">
-                          <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                          <span className="truncate text-[10px] font-black uppercase tracking-wider">{item.label}</span>
-                        </div>
-                        <p className="mt-2 truncate text-sm font-black text-foreground">{item.value}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_8rem]">
-                  <div className="rounded-lg border border-border/70 bg-background/60 p-3">
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
-                        Fluxo principal
-                      </span>
-                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-300">
-                        Online
-                      </span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[72%] rounded-full bg-primary" />
-                    </div>
-                  </div>
-                  <div className="rounded-lg border border-border/70 bg-background/60 p-3">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Viewport</span>
-                    <p className="mt-2 text-sm font-black text-foreground">320+</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </motion.div>
-
-        {/* Bottom Area: Metrics & Scroll Indicator */}
-        <div className="w-full pb-4 pt-4 md:pb-6 md:pt-5">
-          {/* Quick Metrics */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="mx-auto grid max-w-4xl grid-cols-2 gap-3 border-t border-border/40 pt-4 md:grid-cols-4 md:gap-6 md:pt-6"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-black text-foreground">100%</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-extrabold mt-1">TypeScript Estrito</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-black text-foreground">Next.js 16</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-extrabold mt-1">App Router Otimizado</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-black text-foreground">Zustand</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-extrabold mt-1">Gerência de Estados</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-black text-foreground">Vitest</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-extrabold mt-1">Suíte de Testes Pronta</div>
-            </div>
-          </motion.div>
-
-          {/* Dynamic Scroll Indicator */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [0, 8, 8, 0] }}
-            transition={{ 
-              delay: 0.8,
-              duration: 2.5, 
-              repeat: Infinity,
-              ease: "easeInOut" 
-            }}
-            className="mt-5 hidden flex-col items-center justify-center sm:flex"
-            onClick={() => {
-              const el = document.getElementById('features');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 opacity-60">Rolar para descobrir</span>
-            <ChevronDown className="h-4 w-4 text-primary" />
-          </motion.div>
-        </div>
       </section>
 
       {/* Grid Features Section */}

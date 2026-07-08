@@ -29,14 +29,16 @@ implementados sem pedido explicito.
 - [x] Settings atualiza perfil, config mock e API keys fake.
 - [x] Tema claro/escuro funciona e persiste.
 - [x] Notificacoes aparecem e podem ser limpas.
-- [x] Bottom nav mobile nao sobrepoe conteudo critico no smoke mobile.
+- [x] Bottom nav mobile/tablet nao sobrepoe conteudo critico no smoke.
+- [x] Header desktop nao sobrepoe em tablets; a nav completa aparece em `xl+`.
 - [x] Textos longos nao estouram containers nos fluxos cobertos por testes.
 
 Observacao de 2026-07-08: comandos de qualidade passaram localmente com
 `pnpm.cmd`. O smoke Playwright Chromium cobre 320, 375, 768, 1024, 1365 e
 1536px, validando landing, tema, login mock, navegacao principal, formulario de
 projetos, billing mockado, settings, ausencia de overflow horizontal no
-documento e foco visivel em controles principais. No Windows,
+documento, foco visivel em controles principais e estrategia de navegacao
+mobile/tablet vs desktop. No Windows,
 `pnpm.cmd run test:e2e` gerencia o dev server por
 `scripts/run-playwright-e2e.mjs` e encerra a arvore de processos que ele mesmo
 iniciar.
@@ -59,6 +61,7 @@ iniciar.
 - [x] Navegacao por teclado funciona nos fluxos principais cobertos por E2E.
 - [x] Botoes icon-only possuem `aria-label` ou nome acessivel.
 - [x] Inputs possuem label e erros conectados.
+- [x] Menu do usuario nao contem toggle redundante de dark mode.
 - [x] Contraste visual principal foi conferido em tema claro e escuro.
 - [x] Animacoes respeitam movimento reduzido quando usam os presets ou CSS
   global.

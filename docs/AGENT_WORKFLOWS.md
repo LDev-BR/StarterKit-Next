@@ -34,7 +34,7 @@ instalada do pacote.
 
 | Tipo de tarefa | Leia antes | Arquivos provaveis | Validacao minima |
 | --- | --- | --- | --- |
-| Ajuste visual ou responsivo | `FRONTEND_PATTERNS.md` | `features/showcase/**`, `components/**`, `app/globals.css` | `pnpm run lint`, `pnpm run lint:types`, `pnpm run test:e2e` quando tocar fluxo principal |
+| Ajuste visual ou responsivo | `FRONTEND_PATTERNS.md` | `features/showcase/**`, `components/**`, `app/globals.css` | `pnpm run lint`, `pnpm run lint:types`, `pnpm run test:e2e` quando tocar fluxo principal ou breakpoints 320, 375, 768, 1024, 1365 e 1536px |
 | Novo componente reutilizavel | `FRONTEND_PATTERNS.md`, `ARCHITECTURE.md` | `components/ui/**`, `tests/**` | teste focado, lint, typecheck |
 | Fluxo de dashboard/projetos/billing/settings | `ARCHITECTURE.md`, `DATA_AND_API_CONTRACTS.md` | `features/showcase/**`, `lib/store.ts` | teste focado, lint, typecheck e smoke Playwright quando o fluxo principal mudar |
 | Mock, estado ou contrato API | `DATA_AND_API_CONTRACTS.md` | `lib/store.ts`, `services/**`, `types/**` | teste focado, lint, typecheck |
@@ -80,7 +80,7 @@ Objetivo: adicionar estado vazio responsivo na lista de projetos.
 Leia: AGENTS.md, docs/FRONTEND_PATTERNS.md, features/showcase/projects/form-showcase.tsx.
 Nao fazer: backend real, nova dependencia, nova rota.
 Validacao: pnpm run lint, pnpm run lint:types, teste focado se alterar logica.
-Aceite: em mobile e desktop, lista vazia mostra EmptyState e CTA sem quebrar o layout.
+Aceite: em mobile, tablet e desktop, lista vazia mostra EmptyState e CTA sem quebrar o layout.
 ```
 
 Para fechamento de validacao frontend, acrescente `pnpm test`, `pnpm run build`

@@ -31,11 +31,11 @@ Objetivo:
 
 Trabalho permitido:
 
-- [ ] Ajustar responsividade em mobile, tablet e desktop.
-- [ ] Refinar landing, auth mock, dashboard, projetos, billing e settings.
-- [ ] Melhorar componentes base.
-- [ ] Corrigir acessibilidade e estados de UI.
-- [ ] Aumentar cobertura Vitest onde houver logica.
+- [x] Ajustar responsividade em mobile, tablet e desktop.
+- [x] Refinar landing, auth mock, dashboard, projetos, billing e settings.
+- [x] Melhorar componentes base.
+- [x] Corrigir acessibilidade e estados de UI.
+- [x] Aumentar cobertura Vitest onde houver logica.
 - [ ] Melhorar contratos mockados sem criar backend real.
 - [ ] Documentar arquitetura, padroes e checklist.
 
@@ -43,10 +43,12 @@ Trabalho permitido:
 
 Criterio de saida:
 
-- [x] Fluxos principais funcionam sem erro em mobile, tablet e desktop.
+- [x] Fluxos principais funcionam sem erro em 320, 375, 768, 1024, 1365 e
+  1536px.
 - [x] Tema claro/escuro consistente.
 - [x] Formularios validam e exibem feedback corretamente.
-- [ ] Estados vazio, loading e erro existem onde fazem sentido.
+- [x] Estados vazio, loading e erro existem onde fazem sentido na fase frontend
+  atual.
 - [x] `pnpm run lint`, `pnpm run lint:types`, `pnpm test`,
   `pnpm run build` e `pnpm run test:e2e` passam.
 - [x] Documentacao em `docs/` reflete a arquitetura real.
@@ -55,7 +57,7 @@ Entregas recomendadas:
 
 - [x] Testes adicionais para store e formularios criticos.
 - [x] Revisao de acessibilidade com teclado.
-- [x] Verificacao visual em viewports mobile, tablet e desktop.
+- [x] Verificacao visual em viewports mobile, tablet e desktop largo.
 - [x] Limpeza de textos inconsistentes ou placeholders de demo que prejudiquem
   o starter kit.
 
@@ -70,7 +72,11 @@ Progresso do fechamento enxuto:
   segmentados ganharam semantica acessivel adicional.
 - [x] API keys mockadas usam prefixo `sk_mock_` para evitar aparencia de segredo
   real.
-- [x] Playwright Chromium foi adicionado e passou em desktop, tablet e mobile.
+- [x] Playwright Chromium foi adicionado e passou em 320, 375, 768, 1024, 1365
+  e 1536px.
+- [x] Header evita sobreposicao em tablets usando bottom nav ate antes de `xl`.
+- [x] Menu do usuario foi simplificado sem toggle de dark mode.
+- [x] Landing foi enxugada, removendo preview decorativo "StarterKit Console".
 
 ## Fase 2: desenho do backend e contratos
 
@@ -172,7 +178,7 @@ Trabalho esperado:
 
 - [x] Adicionar testes para `lib/store.ts`.
 - [x] Adicionar testes de formularios para projetos, auth e settings.
-- [ ] Avaliar se `Sidebar` deve ser removida, reativada ou documentada como
+- [x] Avaliar se `Sidebar` deve ser removida, reativada ou documentada como
   opcao de layout.
 - [ ] Extrair partes muito grandes de showcases quando uma nova tarefa tocar
   nelas.

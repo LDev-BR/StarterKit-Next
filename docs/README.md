@@ -59,7 +59,8 @@ pnpm run test:e2e
 Para mudancas pequenas em docs, a validacao minima e ler os arquivos alterados e
 confirmar que os links/caminhos citados existem. Para mudancas de codigo, rode a
 sequencia completa quando possivel. O Playwright fica em `e2e/` e usa apenas
-Chromium para validar desktop, tablet e mobile sem adicionar backend real.
+Chromium para validar 320, 375, 768, 1024, 1365 e 1536px sem adicionar backend
+real.
 
 O script `test:e2e` usa `scripts/run-playwright-e2e.mjs` para iniciar o dev
 server quando necessario, reutilizar `localhost:3000` se ele ja estiver ativo e

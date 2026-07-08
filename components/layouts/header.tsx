@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
-import { useTheme } from '@/providers/theme-provider';
 import { cn } from '@/lib/utils';
 import { APP_NAV_ITEMS } from '@/config/navigation';
 import { motion, AnimatePresence } from 'motion/react';
@@ -10,8 +9,6 @@ import {
   Bell,
   Search,
   HelpCircle,
-  Moon,
-  Sun,
   LogOut,
   BellRing,
   CheckCircle,
@@ -29,8 +26,6 @@ export function Header() {
     isMobileNotificationsOpen,
     setMobileNotificationsOpen
   } = useAppStore();
-
-  const { theme, setTheme } = useTheme();
 
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -142,7 +137,11 @@ export function Header() {
         </div>
 
         {/* Middle Section: Desktop Navigation Tabs */}
-        <nav className="hidden md:flex items-center justify-center gap-1 shrink-0" aria-label="Navegação principal">
+        <nav
+          id="desktop-primary-nav"
+          className="hidden xl:flex items-center justify-center gap-1 shrink-0"
+          aria-label="Navegação principal"
+        >
           {APP_NAV_ITEMS.map((tab) => {
             const TabIcon = tab.icon;
             const isActive = currentTab === tab.id;
@@ -177,7 +176,7 @@ export function Header() {
         {/* Right Section: Interactive Dropdowns & Search */}
         <div className="flex items-center gap-3 flex-1 justify-end">
           {/* Quick Search on Desktop */}
-          <div className="hidden lg:flex items-center gap-2 relative w-48 xl:w-60">
+          <div className="hidden 2xl:flex items-center gap-2 relative w-60">
             <Search className="h-3.5 w-3.5 absolute left-3 text-muted-foreground pointer-events-none" />
             <input
               type="text"
@@ -336,36 +335,6 @@ export function Header() {
                         </button>
                       );
                     })}
-
-                    <div className="h-[1px] bg-border/70 my-2" />
-
-                    {/* Highly Styled Dark Mode Toggle iOS Switch Button */}
-                    <div className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-muted/20 select-none">
-                      <div className="flex items-center gap-2.5">
-                        {theme === 'dark' ? (
-                          <Moon className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Sun className="h-4 w-4 text-muted-foreground" />
-                        )}
-                        <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">Dark Mode</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className={cn(
-                          "w-9 h-5 rounded-full p-0.5 transition-colors duration-200 cursor-pointer outline-none relative",
-                          theme === 'dark' ? "bg-primary" : "bg-neutral-300 dark:bg-neutral-700"
-                        )}
-                        aria-label="Alternar Modo Escuro"
-                      >
-                        <div
-                          className={cn(
-                            "bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200",
-                            theme === 'dark' ? "translate-x-4" : "translate-x-0"
-                          )}
-                        />
-                      </button>
-                    </div>
 
                     <a
                       href="#help"

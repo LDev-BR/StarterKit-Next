@@ -14,6 +14,10 @@ Preserve estes sinais visuais:
 Evite transformar telas internas em landing pages ou superficies decorativas. O
 starter kit deve parecer uma base de produto real.
 
+A landing publica deve ser produto-first e enxuta: hero, copy, CTAs e secoes
+de conteudo. Nao reintroduza previews decorativos pesados no primeiro viewport
+quando eles competirem com leitura ou responsividade.
+
 ## Tokens e CSS
 
 `app/globals.css` define tokens via CSS variables:
@@ -87,13 +91,18 @@ filtro visual ou modal.
 Padroes atuais:
 
 - `Header` fixo/sticky no topo.
-- Navegacao desktop dentro do `Header`, alimentada por `config/navigation.ts`.
-- Bottom nav mobile em `app/page.tsx`, com `safe-area-inset-bottom`.
+- Navegacao desktop dentro do `Header` a partir de `xl`, alimentada por
+  `config/navigation.ts`.
+- Bottom nav mobile/tablet em `app/page.tsx` ate antes de `xl`, com
+  `safe-area-inset-bottom`.
 - Conteudo central em `MainContent` com `max-w-7xl`, paddings responsivos e
   `overflow-x-hidden`.
 - Drawers/menus mobile usam `AnimatePresence`.
 - A `Sidebar` existe como variante opcional documentada, mas nao e montada por
   padrao.
+- O menu do avatar deve ficar restrito a conta, atalhos, ajuda e logout. O
+  toggle de tema pertence a settings ou a superficies publicas, nao ao menu do
+  usuario autenticado.
 
 Antes de finalizar qualquer UI, confira:
 

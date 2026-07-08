@@ -19,7 +19,8 @@ para substituir mocks por backend real no futuro.
 - React Hook Form + Zod para formularios.
 - Motion para microanimacoes.
 - Vitest + Testing Library para testes unitarios e de componentes.
-- Playwright Chromium para smoke E2E frontend em desktop, tablet e mobile.
+- Playwright Chromium para smoke E2E frontend em 320, 375, 768, 1024, 1365 e
+  1536px.
 - Docker e Docker Compose para ambiente local.
 
 ## Fluxo de renderizacao
@@ -34,7 +35,7 @@ para substituir mocks por backend real no futuro.
 2. Com `user` no store:
    - Renderiza `MainContent`.
    - Renderiza o conteudo da aba ativa por `currentTab`.
-   - Renderiza a bottom nav mobile.
+   - Renderiza a bottom nav mobile/tablet ate antes de `xl`.
 
 As abas atuais sao:
 
@@ -44,8 +45,16 @@ As abas atuais sao:
 - `settings`: `SettingsShowcase`.
 
 `config/navigation.ts` centraliza `APP_NAV_ITEMS`, `DEFAULT_APP_TAB` e o tipo
-`AppTab`. `lib/store.ts`, `Header`, bottom nav mobile e `Sidebar` consomem esse
-contrato para evitar divergencia entre labels, icones e ids de abas.
+`AppTab`. `lib/store.ts`, `Header`, bottom nav mobile/tablet e `Sidebar`
+consomem esse contrato para evitar divergencia entre labels, icones e ids de
+abas.
+
+O `Header` exibe a navegacao completa apenas a partir de `xl`; em larguras
+mobile e tablet a navegacao principal fica na bottom nav. A busca compacta do
+header aparece apenas em `2xl` para evitar sobreposicao entre logo, abas e
+acoes de usuario. O menu do usuario contem atalhos de navegacao, ajuda e logout;
+alternancia de tema fica na landing publica e na tela de settings, nao no menu
+do avatar.
 
 `components/layouts/sidebar.tsx` existe, mas nao esta montado em `app/page.tsx`
 no estado atual. Qualquer agente que for alterar navegacao deve decidir
@@ -150,8 +159,9 @@ Testes existentes cobrem:
 `playwright.config.ts` define smoke E2E Chromium-only em `e2e/`, com projetos
 explicitos para 320, 375, 768, 1024, 1365 e 1536px. O teste cobre landing,
 tema, login mock, navegacao para projetos/billing/settings, validacao basica de
-formulario, billing mockado, ausencia de overflow horizontal e foco visivel em
-controles principais. Ele nao cria backend real nem persistencia.
+formulario, billing mockado, ausencia de overflow horizontal, foco visivel em
+controles principais e a troca responsiva entre bottom nav e nav desktop. Ele
+nao cria backend real nem persistencia.
 
 `scripts/run-playwright-e2e.mjs` e o ponto de entrada de `pnpm run test:e2e`.
 Ele inicia o dev server quando necessario, reutiliza `localhost:3000` se ja

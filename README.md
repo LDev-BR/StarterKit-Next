@@ -19,7 +19,8 @@ fase; os fluxos usam mocks e estado em memoria.
 - React Hook Form + Zod para formularios
 - Motion para animacoes
 - Vitest + Testing Library para testes unitarios e de componentes
-- Playwright Chromium para smoke E2E em desktop, tablet e mobile
+- Playwright Chromium para smoke E2E nos viewports 320, 375, 768, 1024,
+  1365 e 1536px
 - Docker Compose com frontend e PostgreSQL local
 
 ## Estrutura
@@ -82,7 +83,8 @@ pnpm run test:e2e
 
 No Windows, os mesmos comandos podem ser executados com `pnpm.cmd`. O Playwright
 usa Chromium apenas e valida landing, tema, login mock, navegacao principal,
-formulario de projetos e billing mockado em viewports desktop, tablet e mobile.
+formulario de projetos, billing mockado, settings, foco visivel e ausencia de
+overflow horizontal nos viewports 320, 375, 768, 1024, 1365 e 1536px.
 O script `test:e2e` inicia o dev server quando necessario, reutiliza
 `localhost:3000` se ele ja estiver ativo e encerra apenas o servidor que ele
 mesmo iniciou.
@@ -132,6 +134,12 @@ Servicos:
 
 - `services/api-client.ts` e `services/mock-service.ts` mantem o contrato de API para uma futura troca dos mocks por endpoints reais.
 - `lib/store.ts` concentra a simulacao atual de autenticacao, projetos, chaves de API, notificacoes, assinatura e logs.
+- A navegacao principal usa header desktop a partir de `xl`; mobile e tablet
+  usam bottom nav com safe area.
+- A `Sidebar` segue disponivel como variante opcional de layout, mas nao e
+  montada por padrao.
+- A landing publica foi mantida enxuta e nao deve reintroduzir previews
+  decorativos que disputem leitura com o hero.
 - Testes cobrem componentes base, tema, store, formularios criticos e
   semantica acessivel de modais/dialogs.
 - Playwright cobre um smoke visual/funcional dos fluxos principais sem backend
