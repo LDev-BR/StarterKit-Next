@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { useAppStore } from '@/lib/store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  CreditCard, 
-  Zap, 
+import {
+  CreditCard,
+  Zap,
   Check, 
   ArrowRight, 
   FileText, 
@@ -18,6 +18,8 @@ import {
   Activity,
   Sparkles
 } from 'lucide-react';
+
+const clampProgressValue = (value: number) => Math.min(Math.max(Math.round(value), 0), 100);
 
 export function BillingShowcase() {
   const { 
@@ -115,6 +117,18 @@ export function BillingShowcase() {
     return `$${computedPrice.toFixed(2)}`;
   };
 
+  const apiLimit = subscription === 'free' ? 10000 : subscription === 'pro' ? 100000 : 1000000;
+  const apiLimitLabel = subscription === 'free' ? '10k' : subscription === 'pro' ? '100k' : 'Ilimitado';
+  const apiUsagePercent = (apiUsage / apiLimit) * 100;
+  const apiProgressValue = clampProgressValue(apiUsagePercent);
+  const dbLimit = subscription === 'free' ? 1 : subscription === 'pro' ? 10 : 100;
+  const dbUsagePercent = (dbUsage / dbLimit) * 100;
+  const dbProgressValue = clampProgressValue(dbUsagePercent);
+  const activeSeats = user ? 1 : 0;
+  const seatsLimit = subscription === 'free' ? 1 : subscription === 'pro' ? 5 : 25;
+  const seatsUsagePercent = (activeSeats / seatsLimit) * 100;
+  const seatsProgressValue = clampProgressValue(seatsUsagePercent);
+
   return (
     <div id="saas-billing-container" className="flex flex-col gap-8 w-full text-left">
       {/* Title & Cycle selector Header */}
@@ -130,7 +144,11 @@ export function BillingShowcase() {
         </div>
 
         {/* Toggle Billing Cycle */}
-        <div className="flex items-center gap-2 p-1 bg-neutral-100/60 dark:bg-neutral-800/30 border border-border rounded-xl">
+        <div
+          role="group"
+          aria-label="Ciclo de cobranca"
+          className="flex items-center gap-2 p-1 bg-neutral-100/60 dark:bg-neutral-800/30 border border-border rounded-xl"
+        >
           <button
             onClick={() => setBillingCycle('monthly')}
             aria-pressed={billingCycle === 'monthly'}
@@ -170,7 +188,7 @@ export function BillingShowcase() {
                 <Cpu className="h-4 w-4 text-blue-500" /> API Requests volume
               </span>
               <span className="text-[10px] bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded font-bold">
-                {((apiUsage / (subscription === 'free' ? 10000 : subscription === 'pro' ? 100000 : 1000000)) * 100).toFixed(0)}%
+                {apiUsagePercent.toFixed(0)}%
               </span>
             </div>
 
@@ -180,17 +198,25 @@ export function BillingShowcase() {
                   {apiUsage.toLocaleString('pt-BR')} 
                 </span>
                 <span className="text-xs text-muted-foreground font-semibold">
-                  / {subscription === 'free' ? '10k' : subscription === 'pro' ? '100k' : 'Ilimitado'} reqs
+                  / {apiLimitLabel} reqs
                 </span>
               </div>
               <p className="text-[10px] text-muted-foreground font-semibold">Consumo estimado do mês corrente</p>
             </div>
 
             {/* Custom tailored progress bar */}
-            <div className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+            <div
+              role="progressbar"
+              aria-label="Uso de API requests"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={apiProgressValue}
+              aria-valuetext={`${apiUsage} de ${apiLimit} requisicoes mensais`}
+              className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
+            >
               <div 
                 className="h-full bg-blue-500 transition-all duration-500 rounded-full"
-                style={{ width: `${Math.min((apiUsage / (subscription === 'free' ? 10000 : subscription === 'pro' ? 100000 : 1000000)) * 100, 100)}%` }}
+                style={{ width: `${apiProgressValue}%` }}
               />
             </div>
           </div>
@@ -207,7 +233,7 @@ export function BillingShowcase() {
                 <Database className="h-4 w-4 text-purple-500" /> Storage simulado
               </span>
               <span className="text-[10px] bg-purple-500/10 text-purple-500 px-2 py-0.5 rounded font-bold">
-                {((dbUsage / (subscription === 'free' ? 1 : subscription === 'pro' ? 10 : 100)) * 100).toFixed(0)}%
+                {dbUsagePercent.toFixed(0)}%
               </span>
             </div>
 
@@ -217,17 +243,25 @@ export function BillingShowcase() {
                   {dbUsage.toFixed(1)} GB
                 </span>
                 <span className="text-xs text-muted-foreground font-semibold">
-                  / {subscription === 'free' ? '1 GB' : subscription === 'pro' ? '10 GB' : '100 GB'}
+                  / {dbLimit} GB
                 </span>
               </div>
               <p className="text-[10px] text-muted-foreground font-semibold">Tamanho demonstrativo dos dados do starter kit</p>
             </div>
 
             {/* Custom tailored progress bar */}
-            <div className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+            <div
+              role="progressbar"
+              aria-label="Uso de storage simulado"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={dbProgressValue}
+              aria-valuetext={`${dbUsage.toFixed(1)} de ${dbLimit} GB`}
+              className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
+            >
               <div 
                 className="h-full bg-purple-500 transition-all duration-500 rounded-full"
-                style={{ width: `${(dbUsage / (subscription === 'free' ? 1 : subscription === 'pro' ? 10 : 100)) * 100}%` }}
+                style={{ width: `${dbProgressValue}%` }}
               />
             </div>
           </div>
@@ -244,27 +278,35 @@ export function BillingShowcase() {
                 <Users className="h-4 w-4 text-emerald-500" /> Collaborator Seats
               </span>
               <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded font-bold">
-                {((user ? 1 : 0) / (subscription === 'free' ? 1 : subscription === 'pro' ? 5 : 25) * 100).toFixed(0)}%
+                {seatsUsagePercent.toFixed(0)}%
               </span>
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between items-baseline">
                 <span className="text-2xl font-black text-foreground">
-                  {user ? 1 : 0} Seat
+                  {activeSeats} Seat
                 </span>
                 <span className="text-xs text-muted-foreground font-semibold">
-                  / {subscription === 'free' ? '1' : subscription === 'pro' ? '5' : '25'} ativos
+                  / {seatsLimit} ativos
                 </span>
               </div>
               <p className="text-[10px] text-muted-foreground font-semibold">Membros da equipe com acesso JWT</p>
             </div>
 
             {/* Custom tailored progress bar */}
-            <div className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+            <div
+              role="progressbar"
+              aria-label="Uso de collaborator seats"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={seatsProgressValue}
+              aria-valuetext={`${activeSeats} de ${seatsLimit} assentos ativos`}
+              className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
+            >
               <div 
                 className="h-full bg-emerald-500 transition-all duration-500 rounded-full"
-                style={{ width: `${((user ? 1 : 0) / (subscription === 'free' ? 1 : subscription === 'pro' ? 5 : 25)) * 100}%` }}
+                style={{ width: `${seatsProgressValue}%` }}
               />
             </div>
           </div>
