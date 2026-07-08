@@ -141,4 +141,5 @@ passam pelo componente base `Input`.
 - Auth, projetos, API keys, assinatura, logs e infraestrutura sao simulados.
 - Docker Compose inclui PostgreSQL local, mas o frontend nao persiste dados nele.
 - Nao existe CI versionado em `.github` no estado atual.
-- `next-env.d.ts` e gerado pelo Next e nao deve ser editado manualmente.
+- `next-env.d.ts` e gerado pelo Next, ignorado pelo Git e nao deve ser editado
+  manualmente.

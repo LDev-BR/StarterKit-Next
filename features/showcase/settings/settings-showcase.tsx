@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { 
   Key, 
   Database, 
@@ -25,7 +27,9 @@ import {
   Sun,
   Moon,
   Monitor,
-  Layers
+  Layers,
+  ChevronDown,
+  type LucideIcon
 } from 'lucide-react';
 import { useTheme } from '@/providers/theme-provider';
 import { ComponentsGuide } from '../components/components-guide';
@@ -45,8 +49,42 @@ const profileSchema = z.object({
 type ConnectionFormInput = z.input<typeof connectionSchema>;
 type ConnectionFormData = z.output<typeof connectionSchema>;
 type ProfileFormData = z.output<typeof profileSchema>;
+type SettingsSubTab = 'profile' | 'appearance' | 'infrastructure' | 'design';
+
+const settingsSections: Array<{
+  id: SettingsSubTab;
+  label: string;
+  description: string;
+  icon: LucideIcon;
+}> = [
+  {
+    id: 'profile',
+    label: 'Perfil & Segurança JWT',
+    description: 'Sessão, token e operador',
+    icon: Shield,
+  },
+  {
+    id: 'appearance',
+    label: 'Aparência do Painel',
+    description: 'Tema claro, escuro ou sistema',
+    icon: Sun,
+  },
+  {
+    id: 'infrastructure',
+    label: 'Conectores de API & Infra',
+    description: 'Chaves e conectores simulados',
+    icon: Server,
+  },
+  {
+    id: 'design',
+    label: 'Design System',
+    description: 'Componentes base do starter',
+    icon: Layers,
+  },
+];
 
 export function SettingsShowcase() {
+  const shouldReduceMotion = useReducedMotion();
   const { theme, resolvedTheme, setTheme } = useTheme();
   const { 
     user, 
@@ -60,12 +98,15 @@ export function SettingsShowcase() {
     addNotification 
   } = useAppStore();
 
-  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'infrastructure' | 'appearance' | 'design'>('profile');
+  const [activeSubTab, setActiveSubTab] = useState<SettingsSubTab>('profile');
+  const [isSectionMenuOpen, setIsSectionMenuOpen] = useState(false);
   const [newKeyName, setNewKeyName] = useState('');
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
   const [copiedToken, setCopiedToken] = useState(false);
   const [savingConfig, setSavingConfig] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const activeSection = settingsSections.find((section) => section.id === activeSubTab) ?? settingsSections[0];
+  const ActiveSectionIcon = activeSection.icon;
 
   // Hook form for infrastructure parameters
   const {
@@ -145,6 +186,11 @@ export function SettingsShowcase() {
     addNotification(`A Chave de API "${name}" foi revogada!`, 'warning');
   };
 
+  const handleSectionChange = (nextSubTab: SettingsSubTab) => {
+    setActiveSubTab(nextSubTab);
+    setIsSectionMenuOpen(false);
+  };
+
   return (
     <div id="settings-showcase-container" className="space-y-6 text-left">
       {/* Title block */}
@@ -158,7 +204,99 @@ export function SettingsShowcase() {
       </div>
 
       {/* Internal Settings Subtab Navigator */}
-      <div className="flex border-b border-border/60 gap-4">
+      <div
+        className="relative md:hidden"
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            setIsSectionMenuOpen(false);
+          }
+        }}
+      >
+        <button
+          type="button"
+          aria-label={`Selecionar seção de configurações. Atual: ${activeSection.label}`}
+          aria-haspopup="listbox"
+          aria-controls="settings-mobile-section-listbox"
+          aria-expanded={isSectionMenuOpen}
+          onClick={() => setIsSectionMenuOpen((isOpen) => !isOpen)}
+          className="glass-effect flex min-h-14 w-full items-center gap-3 rounded-xl border border-border/80 bg-card/80 px-3.5 py-3 text-left shadow-sm transition-all hover:border-primary/40 hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+            <ActiveSectionIcon className="h-4.5 w-4.5" aria-hidden="true" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-xs font-black uppercase tracking-wider text-foreground">
+              {activeSection.label}
+            </span>
+            <span className="mt-0.5 block truncate text-[10px] font-semibold text-muted-foreground">
+              {activeSection.description}
+            </span>
+          </span>
+          <ChevronDown
+            className={cn(
+              'h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200',
+              isSectionMenuOpen && 'rotate-180 text-primary'
+            )}
+            aria-hidden="true"
+          />
+        </button>
+
+        <AnimatePresence>
+          {isSectionMenuOpen && (
+            <motion.div
+              id="settings-mobile-section-listbox"
+              role="listbox"
+              aria-label="Seções de configurações"
+              initial={shouldReduceMotion ? false : { opacity: 0, y: -6, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-x-0 top-full z-30 mt-2 rounded-xl border border-border/80 bg-card/95 p-2 shadow-xl backdrop-blur-md"
+            >
+              {settingsSections.map((section) => {
+                const SectionIcon = section.icon;
+                const isActive = activeSubTab === section.id;
+
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    onClick={() => handleSectionChange(section.id)}
+                    className={cn(
+                      'flex min-h-12 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all cursor-pointer',
+                      isActive
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors',
+                        isActive ? 'border-primary/30 bg-primary/10' : 'border-border/70 bg-muted/20'
+                      )}
+                    >
+                      <SectionIcon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[11px] font-black uppercase tracking-wider leading-tight">
+                        {section.label}
+                      </span>
+                      <span className="mt-0.5 block text-[10px] font-semibold leading-tight text-muted-foreground">
+                        {section.description}
+                      </span>
+                    </span>
+                    {isActive && <Check className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="hidden border-b border-border/60 gap-4 md:flex">
         <button
           onClick={() => setActiveSubTab('profile')}
           aria-pressed={activeSubTab === 'profile'}

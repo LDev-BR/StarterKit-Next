@@ -65,4 +65,22 @@ describe('SettingsShowcase forms', () => {
       lastUsed: 'Nunca',
     });
   });
+
+  it('switches settings sections from the mobile dropdown', async () => {
+    const user = userEvent.setup();
+
+    renderSettingsShowcase();
+
+    await user.click(await screen.findByRole('button', { name: /selecionar seção de configurações/i }));
+
+    const sectionMenu = screen.getByRole('listbox', { name: /seções de configurações/i });
+    expect(sectionMenu).toBeInTheDocument();
+
+    await user.click(screen.getByRole('option', { name: /conectores de api/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('listbox', { name: /seções de configurações/i })).not.toBeInTheDocument();
+    });
+    expect(await screen.findByText(/chaves de api ativas/i)).toBeInTheDocument();
+  });
 });

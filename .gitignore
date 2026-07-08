@@ -12,6 +12,7 @@ bun.lockb
 # Next.js
 /.next/
 /out/
+next-env.d.ts
 
 # Build output and caches
 /dist/
