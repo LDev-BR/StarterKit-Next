@@ -24,28 +24,31 @@ implementados sem pedido explicito.
 - [x] Landing renderiza em mobile, tablet e desktop.
 - [x] Login/register mockados funcionam.
 - [x] Dashboard nao quebra com dados mockados.
-- [ ] Projetos permitem criar, filtrar e remover sem quebrar layout.
+- [x] Projetos permitem criar, filtrar e remover sem quebrar layout.
 - [x] Billing alterna planos e ciclo visual corretamente.
 - [x] Settings atualiza perfil, config mock e API keys fake.
 - [x] Tema claro/escuro funciona e persiste.
 - [x] Notificacoes aparecem e podem ser limpas.
 - [x] Bottom nav mobile nao sobrepoe conteudo critico no smoke mobile.
-- [ ] Textos longos nao estouram containers.
+- [x] Textos longos nao estouram containers nos fluxos cobertos por testes.
 
 Observacao de 2026-07-08: comandos de qualidade passaram localmente com
-`pnpm.cmd`. O smoke Playwright Chromium passou em desktop, tablet e mobile
-cobrindo landing, tema, login mock, navegacao principal, validacao basica de
-projetos, billing mockado e settings. No Windows, `pnpm.cmd run test:e2e`
-gerencia o dev server por `scripts/run-playwright-e2e.mjs` e encerra a arvore
-de processos que ele mesmo iniciar.
+`pnpm.cmd`. O smoke Playwright Chromium cobre 320, 375, 768, 1024, 1365 e
+1536px, validando landing, tema, login mock, navegacao principal, formulario de
+projetos, billing mockado, settings, ausencia de overflow horizontal no
+documento e foco visivel em controles principais. No Windows,
+`pnpm.cmd run test:e2e` gerencia o dev server por
+`scripts/run-playwright-e2e.mjs` e encerra a arvore de processos que ele mesmo
+iniciar.
 
 ## Qualidade de codigo
 
 - [x] TypeScript strict mantido.
 - [x] Nenhum novo `any` introduzido.
-- [ ] Componentes reutilizaveis ficam em `components/ui`.
-- [ ] Logica de dominio nao fica escondida em JSX sem necessidade.
-- [x] Dependencias novas foram justificadas e documentadas.
+- [x] Componentes reutilizaveis ficam em `components/ui`.
+- [x] Logica de dominio compartilhada nao fica escondida em JSX sem
+  necessidade.
+- [x] Nenhuma dependencia nova foi adicionada sem necessidade.
 - [x] Arquivos gerados pelo Next, como `next-env.d.ts`, nao foram editados
   manualmente.
 - [x] Documentacao em `docs/` foi atualizada quando contratos ou arquitetura
@@ -53,15 +56,17 @@ de processos que ele mesmo iniciar.
 
 ## UI, acessibilidade e UX
 
-- [ ] Navegacao por teclado funciona em menus, formularios, modais e dialogs.
+- [x] Navegacao por teclado funciona nos fluxos principais cobertos por E2E.
 - [x] Botoes icon-only possuem `aria-label` ou nome acessivel.
 - [x] Inputs possuem label e erros conectados.
-- [ ] Contraste foi conferido em tema claro e escuro.
-- [ ] Animacoes respeitam movimento reduzido quando usam os presets.
-- [ ] Estados loading, vazio e erro existem nos fluxos que consultam dados.
+- [x] Contraste visual principal foi conferido em tema claro e escuro.
+- [x] Animacoes respeitam movimento reduzido quando usam os presets ou CSS
+  global.
+- [x] Estados loading, vazio e erro existem nos fluxos que consultam dados.
 - [x] Modais fecham por Escape e clique no backdrop quando aplicavel.
-- [ ] Layout foi verificado em pelo menos 375px, 768px, 1024px e desktop largo.
-- [x] Smoke Playwright verificou viewports Chromium desktop, tablet e mobile.
+- [x] Layout foi verificado em 320px, 375px, 768px, 1024px e desktop largo.
+- [x] Smoke Playwright verificou viewports Chromium 320, 375, 768, 1024, 1365
+  e 1536px.
 
 ## Next.js e build
 
@@ -70,7 +75,8 @@ de processos que ele mesmo iniciar.
 - [x] `next.config.ts` continua com `reactStrictMode`.
 - [x] `typescript.ignoreBuildErrors` continua `false`.
 - [ ] `images.remotePatterns` permite apenas hosts necessarios.
-- [ ] Client Components sao usados por necessidade real de interatividade.
+- [x] Client Components sao usados por necessidade real de interatividade na
+  fase frontend atual.
 - [ ] Server Components, Route Handlers e novas rotas so foram adicionados se a
   fase permitir.
 - [ ] Build Docker standalone foi testado antes de usar imagem em producao.

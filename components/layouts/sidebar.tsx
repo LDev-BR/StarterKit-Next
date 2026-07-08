@@ -5,17 +5,13 @@ import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '@/providers/theme-provider';
+import { APP_NAV_ITEMS } from '@/config/navigation';
 import { 
-  LayoutDashboard, 
-  FolderKanban, 
-  Key, 
   ChevronLeft,
   ChevronRight,
   HelpCircle,
   Moon,
-  Sun,
-  X,
-  CreditCard
+  X
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -31,13 +27,6 @@ export function Sidebar() {
 
   const { theme, setTheme } = useTheme();
   const [isProCardVisible, setIsProCardVisible] = React.useState(true);
-
-  const menuItems = [
-    { id: 'dashboard', label: 'Painel Geral', icon: LayoutDashboard },
-    { id: 'projects', label: 'Projetos Ativos', icon: FolderKanban },
-    { id: 'billing', label: 'Assinatura', icon: CreditCard },
-    { id: 'settings', label: 'Configurações', icon: Key },
-  ] as const;
 
   const sidebarContent = (
     <div className={cn(
@@ -124,13 +113,14 @@ export function Sidebar() {
           </div>
         )}
         <ul className="space-y-1.5 list-none p-0 m-0">
-          {menuItems.map((item) => {
+        {APP_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
             return (
               <li key={item.id} className="m-0 p-0">
                 <button
                   type="button"
+                  aria-current={isActive ? 'page' : undefined}
                   onClick={() => {
                     setCurrentTab(item.id);
                     // Close mobile drawer after selecting
@@ -145,7 +135,7 @@ export function Sidebar() {
                       ? 'bg-neutral-200/50 dark:bg-neutral-800/60 dark:border dark:border-border/60 text-foreground font-semibold shadow-inner'
                       : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
                   )}
-                  aria-label={isCollapsed ? item.label : undefined}
+                  aria-label={isCollapsed ? item.ariaLabel : undefined}
                 >
                   <Icon className={cn('h-4 w-4 shrink-0 transition-transform group-hover:scale-105', isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground')} />
                   {!isCollapsed && <span>{item.label}</span>}

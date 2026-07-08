@@ -17,24 +17,50 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium-desktop',
+      name: 'chromium-320',
+      use: {
+        browserName: 'chromium',
+        viewport: { width: 320, height: 740 },
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+    {
+      name: 'chromium-375',
+      use: {
+        browserName: 'chromium',
+        viewport: { width: 375, height: 812 },
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+    {
+      name: 'chromium-768',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 768, height: 1024 },
+      },
+    },
+    {
+      name: 'chromium-1024',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1024, height: 768 },
+      },
+    },
+    {
+      name: 'chromium-1365',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1365, height: 768 },
       },
     },
     {
-      name: 'chromium-tablet',
+      name: 'chromium-1536',
       use: {
-        ...devices['iPad (gen 7)'],
+        ...devices['Desktop Chrome'],
         browserName: 'chromium',
-      },
-    },
-    {
-      name: 'chromium-mobile',
-      use: {
-        ...devices['Pixel 5'],
-        browserName: 'chromium',
+        viewport: { width: 1536, height: 864 },
       },
     },
   ],

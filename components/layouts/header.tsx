@@ -4,12 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
 import { useTheme } from '@/providers/theme-provider';
 import { cn } from '@/lib/utils';
+import { APP_NAV_ITEMS } from '@/config/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  LayoutDashboard,
-  FolderKanban,
-  Key,
-  Layers,
   Bell,
   Search,
   HelpCircle,
@@ -18,8 +15,7 @@ import {
   LogOut,
   BellRing,
   CheckCircle,
-  AlertCircle,
-  CreditCard
+  AlertCircle
 } from 'lucide-react';
 
 export function Header() {
@@ -35,14 +31,6 @@ export function Header() {
   } = useAppStore();
 
   const { theme, setTheme } = useTheme();
-
-  // Navigation items matching the requested order: Painel, Projetos, Assinatura, Configurações
-  const navTabs = [
-    { id: 'dashboard', label: 'Painel', icon: LayoutDashboard },
-    { id: 'projects', label: 'Projetos', icon: FolderKanban },
-    { id: 'billing', label: 'Assinatura', icon: CreditCard },
-    { id: 'settings', label: 'Configurações', icon: Key },
-  ] as const;
 
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -154,16 +142,19 @@ export function Header() {
         </div>
 
         {/* Middle Section: Desktop Navigation Tabs */}
-        <nav className="hidden md:flex items-center justify-center gap-1 shrink-0">
-          {navTabs.map((tab) => {
+        <nav className="hidden md:flex items-center justify-center gap-1 shrink-0" aria-label="Navegação principal">
+          {APP_NAV_ITEMS.map((tab) => {
             const TabIcon = tab.icon;
             const isActive = currentTab === tab.id;
             return (
               <button
                 key={tab.id}
+                type="button"
+                aria-label={tab.ariaLabel}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => setCurrentTab(tab.id)}
                 className={cn(
-                  "relative px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-lg flex items-center gap-2",
+                  "relative flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:px-4",
                   isActive
                     ? "text-primary font-extrabold"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
@@ -186,7 +177,7 @@ export function Header() {
         {/* Right Section: Interactive Dropdowns & Search */}
         <div className="flex items-center gap-3 flex-1 justify-end">
           {/* Quick Search on Desktop */}
-          <div className="hidden sm:flex items-center gap-2 relative w-48 lg:w-60">
+          <div className="hidden lg:flex items-center gap-2 relative w-48 xl:w-60">
             <Search className="h-3.5 w-3.5 absolute left-3 text-muted-foreground pointer-events-none" />
             <input
               type="text"
@@ -201,6 +192,7 @@ export function Header() {
           {/* Notifications Trigger Container */}
           <div className="relative" ref={notificationsRef}>
             <button
+              type="button"
               onClick={() => {
                 if (typeof window !== 'undefined' && window.innerWidth < 768) {
                   setMobileNotificationsOpen(!isMobileNotificationsOpen);
@@ -212,7 +204,7 @@ export function Header() {
               aria-haspopup="dialog"
               aria-controls={isNotificationsOpen ? 'desktop-notifications-menu' : isMobileNotificationsOpen ? 'mobile-notifications-dialog' : undefined}
               className={cn(
-                "h-9 w-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer relative",
+                "relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 (isNotificationsOpen || isMobileNotificationsOpen) && "bg-muted text-foreground"
               )}
               aria-label="Notificações"
@@ -243,6 +235,7 @@ export function Header() {
                         <span className="text-xs font-black uppercase tracking-wider text-foreground">Alertas Ativos</span>
                       </div>
                       <button
+                        type="button"
                         onClick={handleClearNotifications}
                         className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-wider cursor-pointer"
                       >
@@ -276,8 +269,9 @@ export function Header() {
           {/* User Profile Thumbnail Trigger Container */}
           <div className="relative" ref={profileRef}>
             <button
+              type="button"
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2 border border-border/80 rounded-full p-0.5 hover:bg-muted/40 transition-all cursor-pointer relative"
+              className="relative flex items-center gap-2 rounded-full border border-border/80 p-0.5 transition-all hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Menu do Usuário"
               aria-expanded={isProfileOpen}
               aria-haspopup="dialog"
@@ -319,61 +313,29 @@ export function Header() {
                   {/* Dropdown Options */}
                   <div className="space-y-1">
                     {/* Navigation shortcuts inside dropdown */}
-                    <button
-                      onClick={() => {
-                        setCurrentTab('dashboard');
-                        setIsProfileOpen(false);
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all text-left cursor-pointer",
-                        currentTab === 'dashboard' && "text-primary bg-primary/5"
-                      )}
-                    >
-                      <LayoutDashboard className="h-4 w-4" />
-                      <span>Painel</span>
-                    </button>
+                    {APP_NAV_ITEMS.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = currentTab === item.id;
 
-                    <button
-                      onClick={() => {
-                        setCurrentTab('projects');
-                        setIsProfileOpen(false);
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all text-left cursor-pointer",
-                        currentTab === 'projects' && "text-primary bg-primary/5"
-                      )}
-                    >
-                      <FolderKanban className="h-4 w-4" />
-                      <span>Projetos</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setCurrentTab('billing');
-                        setIsProfileOpen(false);
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all text-left cursor-pointer",
-                        currentTab === 'billing' && "text-primary bg-primary/5"
-                      )}
-                    >
-                      <CreditCard className="h-4 w-4" />
-                      <span>Assinatura</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setCurrentTab('settings');
-                        setIsProfileOpen(false);
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all text-left cursor-pointer",
-                        currentTab === 'settings' && "text-primary bg-primary/5"
-                      )}
-                    >
-                      <Key className="h-4 w-4" />
-                      <span>Configurações</span>
-                    </button>
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          aria-current={isActive ? 'page' : undefined}
+                          onClick={() => {
+                            setCurrentTab(item.id);
+                            setIsProfileOpen(false);
+                          }}
+                          className={cn(
+                            "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                            isActive && "text-primary bg-primary/5"
+                          )}
+                        >
+                          <Icon className="h-4 w-4" aria-hidden="true" />
+                          <span>{item.label}</span>
+                        </button>
+                      );
+                    })}
 
                     <div className="h-[1px] bg-border/70 my-2" />
 
@@ -388,6 +350,7 @@ export function Header() {
                         <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">Dark Mode</span>
                       </div>
                       <button
+                        type="button"
                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                         className={cn(
                           "w-9 h-5 rounded-full p-0.5 transition-colors duration-200 cursor-pointer outline-none relative",
@@ -421,6 +384,7 @@ export function Header() {
 
                     {/* Logout Option */}
                     <button
+                      type="button"
                       onClick={() => {
                         logout();
                         setIsProfileOpen(false);

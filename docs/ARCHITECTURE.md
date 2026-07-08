@@ -43,6 +43,10 @@ As abas atuais sao:
 - `billing`: `BillingShowcase`.
 - `settings`: `SettingsShowcase`.
 
+`config/navigation.ts` centraliza `APP_NAV_ITEMS`, `DEFAULT_APP_TAB` e o tipo
+`AppTab`. `lib/store.ts`, `Header`, bottom nav mobile e `Sidebar` consomem esse
+contrato para evitar divergencia entre labels, icones e ids de abas.
+
 `components/layouts/sidebar.tsx` existe, mas nao esta montado em `app/page.tsx`
 no estado atual. Qualquer agente que for alterar navegacao deve decidir
 explicitamente se vai manter o modelo atual baseado em header + bottom nav ou
@@ -79,9 +83,27 @@ types/                       Tipos compartilhados de contratos
 - Logs: eventos recentes e novos logs.
 - Assinatura: plano atual e uso simulado.
 
+`currentTab` e `setCurrentTab` sao tipados com `AppTab`. Novas abas devem ser
+adicionadas primeiro em `config/navigation.ts` e depois integradas ao switch de
+conteudo em `app/page.tsx`.
+
 Enquanto o projeto estiver em validacao frontend, e aceitavel manter a
 orquestracao no store. Ao iniciar backend real, preserve contratos e migre por
 fatias para evitar quebrar os fluxos visuais.
+
+## UI reutilizavel
+
+`components/ui` contem os primitivos do starter kit. Alem de `Button`, `Card`,
+`Input`, overlays e estados, as telas SaaS usam:
+
+- `PageHeader` para cabecalhos consistentes de pagina.
+- `SegmentedControl` para filtros ou modos mutuamente exclusivos.
+- `MetricCard` para indicadores com progresso acessivel.
+- `ResponsiveDataView` para listas que viram tabela em desktop e cards em
+  mobile.
+
+Dashboard, projects, billing e settings devem preferir esses componentes antes
+de criar controles locais equivalentes.
 
 ## Contrato de API
 
@@ -126,9 +148,10 @@ Testes existentes cobrem:
   dashboard e medidores de billing.
 
 `playwright.config.ts` define smoke E2E Chromium-only em `e2e/`, com projetos
-desktop, tablet e mobile. O teste cobre landing, tema, login mock, navegacao
-para projetos/billing/settings, validacao basica de formulario e billing
-mockado. Ele nao cria backend real nem persistencia.
+explicitos para 320, 375, 768, 1024, 1365 e 1536px. O teste cobre landing,
+tema, login mock, navegacao para projetos/billing/settings, validacao basica de
+formulario, billing mockado, ausencia de overflow horizontal e foco visivel em
+controles principais. Ele nao cria backend real nem persistencia.
 
 `scripts/run-playwright-e2e.mjs` e o ponto de entrada de `pnpm run test:e2e`.
 Ele inicia o dev server quando necessario, reutiliza `localhost:3000` se ja

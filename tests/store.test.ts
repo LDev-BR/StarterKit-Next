@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { APP_NAV_ITEMS, DEFAULT_APP_TAB } from '@/config/navigation';
 import { useAppStore } from '@/lib/store';
 import { resetAppStore } from './store-test-utils';
 
@@ -129,5 +130,19 @@ describe('useAppStore', () => {
 
     expect(useAppStore.getState().subscription).toBe('pro');
     expect(useAppStore.getState().apiUsage).toBe(100000);
+  });
+
+  it('keeps app navigation centralized and typed in the store', () => {
+    expect(DEFAULT_APP_TAB).toBe('dashboard');
+    expect(APP_NAV_ITEMS.map((item) => item.id)).toEqual([
+      'dashboard',
+      'projects',
+      'billing',
+      'settings',
+    ]);
+
+    useAppStore.getState().setCurrentTab('billing');
+
+    expect(useAppStore.getState().currentTab).toBe('billing');
   });
 });

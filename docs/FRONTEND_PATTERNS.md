@@ -42,12 +42,23 @@ Componentes reutilizaveis ficam em `components/ui/`:
   tamanhos `default`, `sm`, `lg`, `icon`.
 - `Card`: container visual com suporte a hover e glass.
 - `Input`: label, helper, erro e icone.
+- `PageHeader`: cabecalho reutilizavel para telas internas, com `eyebrow`,
+  titulo, descricao, icone e area de acoes.
+- `SegmentedControl`: grupos de botoes segmentados tipados, com `aria-pressed`
+  e nome acessivel por `ariaLabel`.
+- `MetricCard`: cards de metricas com tom visual, icone, descricao, progresso
+  acessivel e rodape.
+- `ResponsiveDataView`: contrato unico para tabela desktop e cards mobile.
 - `Modal` e `Dialog`: overlays animados.
 - `EmptyState`, `ErrorState`, `Skeleton`, `Spinner`: estados padrao.
 
 Antes de criar um novo componente, verifique se uma composicao desses resolve.
 Se criar componente novo, mantenha API tipada, props pequenas e classe
 customizavel com `className`.
+
+Para listas tabulares, prefira `ResponsiveDataView` em vez de `overflow-x-auto`
+isolado. A tabela desktop deve manter cabecalhos semanticos e o mobile deve
+receber um `renderMobileCard` especifico do dominio.
 
 ## Formularios
 
@@ -76,11 +87,13 @@ filtro visual ou modal.
 Padroes atuais:
 
 - `Header` fixo/sticky no topo.
-- Navegacao desktop dentro do `Header`.
-- Bottom nav mobile em `app/page.tsx`.
+- Navegacao desktop dentro do `Header`, alimentada por `config/navigation.ts`.
+- Bottom nav mobile em `app/page.tsx`, com `safe-area-inset-bottom`.
 - Conteudo central em `MainContent` com `max-w-7xl`, paddings responsivos e
   `overflow-x-hidden`.
 - Drawers/menus mobile usam `AnimatePresence`.
+- A `Sidebar` existe como variante opcional documentada, mas nao e montada por
+  padrao.
 
 Antes de finalizar qualquer UI, confira:
 
@@ -89,8 +102,11 @@ Antes de finalizar qualquer UI, confira:
 - Botoes mantem area de toque adequada.
 - Overlays nao conflitam com bottom nav.
 - Tema claro e escuro continuam coerentes.
-- Smoke Playwright passa nos projetos desktop, tablet e mobile quando a mudanca
-  toca fluxos principais.
+- Smoke Playwright passa nos viewports 320, 375, 768, 1024, 1365 e 1536px
+  quando a mudanca toca fluxos principais.
+
+Use `.break-anywhere` para tokens, emails, chaves, URLs e nomes dinamicos que
+podem exceder o container. Use `.text-balance-safe` apenas em titulos curtos.
 
 ## Animacoes
 
@@ -118,6 +134,9 @@ Minimo esperado:
   acessiveis.
 - Contraste aceitavel nos temas claro e escuro.
 - Navegacao por teclado nao fica bloqueada.
+- Foco visivel nao deve ficar coberto por header sticky, bottom nav ou drawers.
+- Controles segmentados devem usar `aria-pressed`; navegacao ativa deve usar
+  `aria-current="page"` quando aplicavel.
 
 Se a tarefa alterar componentes base, valide com Testing Library usando queries
 por role/texto acessivel.

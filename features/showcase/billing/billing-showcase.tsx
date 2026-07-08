@@ -2,24 +2,39 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/lib/store';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { MetricCard } from '@/components/ui/metric-card';
+import { PageHeader } from '@/components/ui/page-header';
+import { ResponsiveDataView, type DataColumn } from '@/components/ui/responsive-data-view';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import {
   CreditCard,
-  Zap,
   Check, 
   ArrowRight, 
-  FileText, 
   Download, 
   Shield, 
   Cpu, 
   Database,
   Users,
-  Activity,
   Sparkles
 } from 'lucide-react';
 
 const clampProgressValue = (value: number) => Math.min(Math.max(Math.round(value), 0), 100);
+
+type BillingCycle = 'monthly' | 'annually';
+
+interface InvoiceRow {
+  id: string;
+  date: string;
+  amount: string;
+  status: string;
+}
+
+const billingCycleItems = [
+  { value: 'monthly', label: 'Mensal' },
+  { value: 'annually', label: 'Anual -20%' },
+] as const;
 
 export function BillingShowcase() {
   const { 
@@ -31,7 +46,7 @@ export function BillingShowcase() {
     user
   } = useAppStore();
 
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
 
   type PlanId = 'free' | 'pro' | 'enterprise';
 
@@ -89,7 +104,7 @@ export function BillingShowcase() {
     }
   ];
 
-  const invoices = [
+  const invoices: InvoiceRow[] = [
     { id: 'INV-2026-004', date: '18 Jun, 2026', amount: subscription === 'enterprise' ? '$99.00' : subscription === 'pro' ? '$10.00' : '$0.00', status: 'Pago' },
     { id: 'INV-2026-003', date: '18 Mai, 2026', amount: subscription === 'enterprise' ? '$99.00' : subscription === 'pro' ? '$10.00' : '$0.00', status: 'Pago' },
     { id: 'INV-2026-002', date: '18 Abr, 2026', amount: '$0.00', status: 'Pago' },
@@ -128,194 +143,113 @@ export function BillingShowcase() {
   const seatsLimit = subscription === 'free' ? 1 : subscription === 'pro' ? 5 : 25;
   const seatsUsagePercent = (activeSeats / seatsLimit) * 100;
   const seatsProgressValue = clampProgressValue(seatsUsagePercent);
+  const invoiceColumns: DataColumn<InvoiceRow>[] = [
+    {
+      key: 'id',
+      header: 'Identificador',
+      render: (invoice) => <span className="break-anywhere font-bold text-foreground">{invoice.id}</span>,
+    },
+    {
+      key: 'date',
+      header: 'Data',
+      render: (invoice) => <span className="font-medium text-muted-foreground">{invoice.date}</span>,
+    },
+    {
+      key: 'amount',
+      header: 'Valor',
+      render: (invoice) => <span className="font-mono font-bold text-foreground">{invoice.amount}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      align: 'right',
+      render: (invoice) => (
+        <span className="inline-flex w-fit rounded bg-green-500/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-green-600 dark:text-green-400">
+          {invoice.status}
+        </span>
+      ),
+    },
+    {
+      key: 'action',
+      header: 'Acao',
+      align: 'right',
+      render: (invoice) => (
+        <button
+          type="button"
+          onClick={() => addNotification(`Baixando recibo em PDF da fatura ${invoice.id}...`, 'success')}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          aria-label={`Baixar recibo da fatura ${invoice.id}`}
+        >
+          <Download size={13} />
+        </button>
+      ),
+    },
+  ];
 
   return (
     <div id="saas-billing-container" className="flex flex-col gap-8 w-full text-left">
-      {/* Title & Cycle selector Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground md:text-3xl uppercase flex items-center gap-2">
-            <CreditCard className="h-6 w-6 text-primary" />
-            Assinatura & Faturamento
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Gerencie o ciclo de cobrança do seu SaaS, acompanhe o limite de uso das cotas de recursos e melhore sua infraestrutura.
-          </p>
-        </div>
+      <PageHeader
+        icon={CreditCard}
+        title="Assinatura & Faturamento"
+        description="Gerencie o ciclo de cobranca do seu SaaS, acompanhe o limite de uso das cotas de recursos e melhore sua infraestrutura."
+        actions={(
+          <SegmentedControl<BillingCycle>
+            items={billingCycleItems}
+            value={billingCycle}
+            onValueChange={setBillingCycle}
+            ariaLabel="Ciclo de cobranca"
+            size="sm"
+            className="bg-neutral-100/60 dark:bg-neutral-800/30"
+          />
+        )}
+      />
 
-        {/* Toggle Billing Cycle */}
-        <div
-          role="group"
-          aria-label="Ciclo de cobranca"
-          className="flex items-center gap-2 p-1 bg-neutral-100/60 dark:bg-neutral-800/30 border border-border rounded-xl"
-        >
-          <button
-            onClick={() => setBillingCycle('monthly')}
-            aria-pressed={billingCycle === 'monthly'}
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all ${
-              billingCycle === 'monthly'
-                ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Mensal
-          </button>
-          <button
-            onClick={() => setBillingCycle('annually')}
-            aria-pressed={billingCycle === 'annually'}
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1 ${
-              billingCycle === 'annually'
-                ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <span>Anual</span>
-            <span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[8px] rounded font-black uppercase">
-              -20%
-            </span>
-          </button>
-        </div>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <MetricCard
+          label="Volume de API requests"
+          value={`${apiUsage.toLocaleString('pt-BR')} / ${apiLimitLabel} reqs`}
+          description="Consumo estimado do mes corrente"
+          icon={Cpu}
+          tone="info"
+          progress={{
+            value: apiProgressValue,
+            label: 'Uso de API requests',
+            valueText: `${apiUsage} de ${apiLimit} requisicoes mensais`,
+          }}
+          footer="Ciclo reinicia em 12 dias"
+          className="rounded-2xl"
+        />
+        <MetricCard
+          label="Storage simulado"
+          value={`${dbUsage.toFixed(1)} GB / ${dbLimit} GB`}
+          description="Tamanho demonstrativo dos dados do starter kit"
+          icon={Database}
+          tone="neutral"
+          progress={{
+            value: dbProgressValue,
+            label: 'Uso de storage simulado',
+            valueText: `${dbUsage.toFixed(1)} de ${dbLimit} GB`,
+          }}
+          footer="Replicacao visual em modo mock"
+          className="rounded-2xl"
+        />
+        <MetricCard
+          label="Assentos ativos"
+          value={`${activeSeats} ${activeSeats === 1 ? 'assento' : 'assentos'} / ${seatsLimit} ativos`}
+          description="Membros da equipe com sessao mockada"
+          icon={Users}
+          tone="success"
+          progress={{
+            value: seatsProgressValue,
+            label: 'Uso de assentos ativos',
+            valueText: `${activeSeats} de ${seatsLimit} assentos ativos`,
+          }}
+          footer="Nivel maximo de permissoes ativas"
+          className="rounded-2xl"
+        />
       </div>
 
-      {/* Main SaaS Stats Overview (Usage Gauges) */}
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
-        
-        {/* API Requests Quota block */}
-        <Card className="border border-border bg-card p-6 rounded-2xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border/40">
-              <span className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Cpu className="h-4 w-4 text-blue-500" /> Volume de API requests
-              </span>
-              <span className="text-[10px] bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded font-bold">
-                {apiUsagePercent.toFixed(0)}%
-              </span>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex justify-between items-baseline">
-                <span className="text-2xl font-black text-foreground">
-                  {apiUsage.toLocaleString('pt-BR')} 
-                </span>
-                <span className="text-xs text-muted-foreground font-semibold">
-                  / {apiLimitLabel} reqs
-                </span>
-              </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">Consumo estimado do mês corrente</p>
-            </div>
-
-            {/* Custom tailored progress bar */}
-            <div
-              role="progressbar"
-              aria-label="Uso de API requests"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={apiProgressValue}
-              aria-valuetext={`${apiUsage} de ${apiLimit} requisicoes mensais`}
-              className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
-            >
-              <div 
-                className="h-full bg-blue-500 transition-all duration-500 rounded-full"
-                style={{ width: `${apiProgressValue}%` }}
-              />
-            </div>
-          </div>
-          <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider pt-3 border-t border-border/40 mt-4">
-            Ciclo reinicia em 12 dias
-          </p>
-        </Card>
-
-        {/* Database Storage Row Quota block */}
-        <Card className="border border-border bg-card p-6 rounded-2xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border/40">
-              <span className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Database className="h-4 w-4 text-purple-500" /> Storage simulado
-              </span>
-              <span className="text-[10px] bg-purple-500/10 text-purple-500 px-2 py-0.5 rounded font-bold">
-                {dbUsagePercent.toFixed(0)}%
-              </span>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex justify-between items-baseline">
-                <span className="text-2xl font-black text-foreground">
-                  {dbUsage.toFixed(1)} GB
-                </span>
-                <span className="text-xs text-muted-foreground font-semibold">
-                  / {dbLimit} GB
-                </span>
-              </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">Tamanho demonstrativo dos dados do starter kit</p>
-            </div>
-
-            {/* Custom tailored progress bar */}
-            <div
-              role="progressbar"
-              aria-label="Uso de storage simulado"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={dbProgressValue}
-              aria-valuetext={`${dbUsage.toFixed(1)} de ${dbLimit} GB`}
-              className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
-            >
-              <div 
-                className="h-full bg-purple-500 transition-all duration-500 rounded-full"
-                style={{ width: `${dbProgressValue}%` }}
-              />
-            </div>
-          </div>
-          <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider pt-3 border-t border-border/40 mt-4">
-            Replicação visual em modo mock
-          </p>
-        </Card>
-
-        {/* Active Seats Quota block */}
-        <Card className="border border-border bg-card p-6 rounded-2xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border/40">
-              <span className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Users className="h-4 w-4 text-emerald-500" /> Assentos ativos
-              </span>
-              <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded font-bold">
-                {seatsUsagePercent.toFixed(0)}%
-              </span>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex justify-between items-baseline">
-                <span className="text-2xl font-black text-foreground">
-                  {activeSeats} {activeSeats === 1 ? 'assento' : 'assentos'}
-                </span>
-                <span className="text-xs text-muted-foreground font-semibold">
-                  / {seatsLimit} ativos
-                </span>
-              </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">Membros da equipe com sessão mockada</p>
-            </div>
-
-            {/* Custom tailored progress bar */}
-            <div
-              role="progressbar"
-              aria-label="Uso de assentos ativos"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={seatsProgressValue}
-              aria-valuetext={`${activeSeats} de ${seatsLimit} assentos ativos`}
-              className="h-2 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
-            >
-              <div 
-                className="h-full bg-emerald-500 transition-all duration-500 rounded-full"
-                style={{ width: `${seatsProgressValue}%` }}
-              />
-            </div>
-          </div>
-          <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider pt-3 border-t border-border/40 mt-4">
-            Nível máximo de permissões ativas
-          </p>
-        </Card>
-
-      </div>
 
       {/* Grid containing Plan Selector Pricing Cards */}
       <div>
@@ -459,48 +393,42 @@ export function BillingShowcase() {
             <span className="text-[10px] text-muted-foreground font-bold font-mono">Invoice ledger</span>
           </div>
 
-          <div className="w-full overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-border text-muted-foreground uppercase text-[9px] font-black tracking-widest">
-                  <th className="py-2.5 px-3">Identificador</th>
-                  <th className="py-2.5 px-3">Data</th>
-                  <th className="py-2.5 px-3">Valor</th>
-                  <th className="py-2.5 px-3 text-right">Status</th>
-                  <th className="py-2.5 px-3 text-right">Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoices.map((invoice) => (
-                  <tr key={invoice.id} className="border-b border-border/20 last:border-b-0 hover:bg-muted/40 transition-colors">
-                    <td className="py-3 px-3 font-bold text-foreground">
-                      {invoice.id}
-                    </td>
-                    <td className="py-3 px-3 font-medium text-muted-foreground">
-                      {invoice.date}
-                    </td>
-                    <td className="py-3 px-3 font-mono font-bold text-foreground">
-                      {invoice.amount}
-                    </td>
-                    <td className="py-3 px-3 text-right">
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-green-500/10 text-green-600 dark:text-green-400">
-                        {invoice.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3 text-right">
-                      <button
-                        onClick={() => addNotification(`Baixando recibo em PDF da fatura ${invoice.id}...`, 'success')}
-                        className="p-1 text-muted-foreground hover:text-foreground cursor-pointer hover:bg-muted/60 rounded transition-colors"
-                        aria-label={`Baixar recibo da fatura ${invoice.id}`}
-                      >
-                        <Download size={13} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ResponsiveDataView<InvoiceRow>
+            rows={invoices}
+            columns={invoiceColumns}
+            getRowKey={(invoice) => invoice.id}
+            ariaLabel="Historico de faturas do SaaS"
+            emptyState={{
+              title: 'Nenhuma fatura encontrada',
+              description: 'As faturas geradas pelo ciclo de assinatura aparecem neste ledger.',
+            }}
+            tableClassName="text-xs"
+            renderMobileCard={(invoice) => (
+              <article className="rounded-xl border border-border/70 bg-muted/20 p-4">
+                <div className="flex min-w-0 items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h4 className="break-anywhere text-sm font-black text-foreground">{invoice.id}</h4>
+                    <p className="mt-1 text-xs font-semibold text-muted-foreground">{invoice.date}</p>
+                  </div>
+                  <span className="shrink-0 font-mono text-sm font-bold text-foreground">{invoice.amount}</span>
+                </div>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="inline-flex w-fit rounded bg-green-500/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-green-600 dark:text-green-400">
+                    {invoice.status}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => addNotification(`Baixando recibo em PDF da fatura ${invoice.id}...`, 'success')}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    aria-label={`Baixar recibo da fatura ${invoice.id}`}
+                  >
+                    <Download size={13} />
+                  </button>
+                </div>
+              </article>
+            )}
+          />
+
         </Card>
 
       </div>

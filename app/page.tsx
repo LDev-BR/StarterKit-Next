@@ -10,12 +10,7 @@ import { SettingsShowcase } from '@/features/showcase/settings/settings-showcase
 import { LandingPage } from '@/features/showcase/landing/landing-page';
 import { PageTransition } from '@/components/animations/motion-presets';
 import { useAppStore } from '@/lib/store';
-import { 
-  LayoutDashboard, 
-  FolderKanban, 
-  Key, 
-  CreditCard 
-} from 'lucide-react';
+import { APP_NAV_ITEMS, type AppTab } from '@/config/navigation';
 
 export default function Home() {
   const { user, authView, currentTab, setCurrentTab } = useAppStore();
@@ -23,14 +18,6 @@ export default function Home() {
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, [authView, currentTab, user]);
-
-  // Unified menu items representing real-world standard options
-  const menuItems = [
-    { id: 'dashboard', label: 'Painel', icon: LayoutDashboard },
-    { id: 'projects', label: 'Projetos', icon: FolderKanban },
-    { id: 'billing', label: 'Assinatura', icon: CreditCard },
-    { id: 'settings', label: 'Configurações', icon: Key },
-  ] as const;
 
   // Render the unauthenticated flow if no active JWT session is parsed
   if (!user) {
@@ -49,8 +36,8 @@ export default function Home() {
   }
 
   // Render the authenticated application layout components
-  const renderActiveTab = () => {
-    switch (currentTab) {
+  const renderActiveTab = (tab: AppTab) => {
+    switch (tab) {
       case 'dashboard':
         return <ShowcaseDashboard />;
       case 'projects':
@@ -59,35 +46,48 @@ export default function Home() {
         return <BillingShowcase />;
       case 'settings':
         return <SettingsShowcase />;
-      default:
-        return <ShowcaseDashboard />;
     }
   };
 
   return (
-    <div id="saas-app-root" className="flex min-h-screen w-full bg-background font-sans text-foreground antialiased transition-colors pb-16 md:pb-0 select-none">
+    <div
+      id="saas-app-root"
+      className="flex min-h-screen w-full bg-background pb-[calc(4rem+env(safe-area-inset-bottom))] font-sans text-foreground antialiased transition-colors md:pb-0"
+    >
       {/* Main column layout shell */}
       <MainContent>
         <PageTransition key={currentTab}>
-          {renderActiveTab()}
+          {renderActiveTab(currentTab)}
         </PageTransition>
       </MainContent>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav id="mobile-bottom-nav" className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/90 backdrop-blur-md border-t border-border flex items-center justify-around px-2 z-40 shadow-lg">
-        {menuItems.map((item) => {
+      <nav
+        id="mobile-bottom-nav"
+        aria-label="Navegação principal"
+        className="fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-center justify-around border-t border-border bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-lg backdrop-blur-md md:hidden"
+      >
+        {APP_NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = currentTab === item.id;
           return (
             <button
               key={item.id}
+              type="button"
+              aria-label={item.ariaLabel}
+              aria-current={isActive ? 'page' : undefined}
               onClick={() => setCurrentTab(item.id)}
-              className={`flex flex-col items-center justify-center flex-1 py-1.5 px-1 rounded-lg transition-colors cursor-pointer ${
+              className={`flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center rounded-lg px-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Icon className={`h-5 w-5 ${isActive ? 'scale-110 font-black' : ''} transition-transform duration-150`} />
-              <span className="text-[9px] font-black uppercase tracking-wider mt-1">{item.label}</span>
+              <Icon
+                className={`h-5 w-5 ${isActive ? 'scale-110' : ''} transition-transform duration-150 motion-reduce:transition-none`}
+                aria-hidden="true"
+              />
+              <span className="mt-1 max-w-full truncate text-[10px] font-black uppercase tracking-wider">
+                {item.shortLabel}
+              </span>
             </button>
           );
         })}

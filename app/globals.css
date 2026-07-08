@@ -22,6 +22,7 @@
   --muted: #edf0f5;
   --muted-foreground: #6c738a;
   --border: #e2e5f0;
+  color-scheme: light;
 }
 
 .dark {
@@ -34,6 +35,7 @@
   --muted: #1c1e26;
   --muted-foreground: #8e94a8;
   --border: #232533;
+  color-scheme: dark;
 }
 
 html, body {
@@ -65,4 +67,29 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-balance-safe {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.safe-bottom-nav-padding {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -2,16 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/ui/page-header';
+import { ResponsiveDataView, type DataColumn } from '@/components/ui/responsive-data-view';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { SlideIn } from '@/components/animations/motion-presets';
 import {
   TrendingUp,
   TrendingDown,
-  RefreshCw,
   Cpu,
   ShieldAlert,
-  Zap,
   ChevronRight,
   Plus,
   Calendar,
@@ -21,6 +22,113 @@ import {
   FolderKanban
 } from 'lucide-react';
 import { Dialog } from '@/components/ui/dialog';
+
+type DashboardLog = ReturnType<typeof useAppStore.getState>['logs'][number];
+type DashboardTimeframe = 'today' | 'week';
+type BalanceFilter = 'revenue' | 'expenditure';
+
+interface RecentProjectRow {
+  id: string;
+  owner: string;
+  project: string;
+  status: 'success' | 'waiting' | 'processing';
+  value: string;
+}
+
+const timeframeItems = [
+  { value: 'today', label: 'Hoje' },
+  { value: 'week', label: 'Semana' },
+] as const;
+
+const balanceFilterItems = [
+  { value: 'revenue', label: 'Receita projetada' },
+  { value: 'expenditure', label: 'Despesa estimada' },
+] as const;
+
+const recentProjectRows: RecentProjectRow[] = [
+  {
+    id: 'omega-gateway',
+    owner: 'Admin Starter',
+    project: 'Ã”mega API Gateway',
+    status: 'success',
+    value: '$1,450',
+  },
+  {
+    id: 'kubernetes-replica',
+    owner: 'Equipe Plataforma',
+    project: 'Kubernetes Multi-Replica',
+    status: 'waiting',
+    value: '$3,100',
+  },
+  {
+    id: 'mock-persistence',
+    owner: 'Equipe Dados',
+    project: 'PersistÃªncia mock multi-node',
+    status: 'processing',
+    value: '$450',
+  },
+];
+
+function renderProjectStatus(status: RecentProjectRow['status']) {
+  const statusMap = {
+    success: {
+      label: 'Sucesso',
+      className: 'bg-green-500/15 text-green-600 dark:text-green-400',
+    },
+    waiting: {
+      label: 'Em espera',
+      className: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+    },
+    processing: {
+      label: 'Processando',
+      className: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+    },
+  } satisfies Record<RecentProjectRow['status'], { label: string; className: string }>;
+
+  const statusItem = statusMap[status];
+
+  return (
+    <span className={`inline-flex w-fit rounded px-2 py-0.5 text-[9px] font-bold uppercase ${statusItem.className}`}>
+      {statusItem.label}
+    </span>
+  );
+}
+
+const recentProjectColumns: DataColumn<RecentProjectRow>[] = [
+  {
+    key: 'owner',
+    header: 'ResponsÃ¡vel',
+    render: (row) => <span className="font-bold text-foreground">{row.owner}</span>,
+  },
+  {
+    key: 'project',
+    header: 'Projeto',
+    render: (row) => <span className="break-anywhere text-muted-foreground">{row.project}</span>,
+  },
+  {
+    key: 'status',
+    header: 'Status',
+    render: (row) => renderProjectStatus(row.status),
+  },
+  {
+    key: 'value',
+    header: 'Valor',
+    align: 'right',
+    render: (row) => <span className="font-mono font-bold">{row.value}</span>,
+  },
+];
+
+function renderLogStatus(status: DashboardLog['status']) {
+  return (
+    <span className={`inline-flex w-fit rounded px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider ${
+      status === 'success'
+        ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+    }`}>
+      {status === 'success' ? 'OK' : 'AVISO'}
+    </span>
+  );
+}
 
 export function ShowcaseDashboard() {
   const { projects, logs, config, addLog, addNotification, updateConfig, user, setCurrentTab, subscription } = useAppStore();
@@ -81,77 +189,85 @@ export function ShowcaseDashboard() {
     }
   };
 
+  const recentLogRows = logs.slice(0, 3);
+  const logColumns: DataColumn<DashboardLog>[] = [
+    {
+      key: 'operator',
+      header: 'Operador',
+      render: (log) => (
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-[8px] font-bold uppercase text-primary">
+            {log.userName.slice(0, 2)}
+          </div>
+          <span className="break-anywhere font-bold text-foreground">{log.userName}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'action',
+      header: 'A\u00e7\u00e3o Efetuada',
+      render: (log) => (
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="break-anywhere font-semibold text-foreground">{log.action}</span>
+          <span className="w-fit rounded bg-muted px-1 py-0.5 font-mono text-[10px] text-muted-foreground">
+            {log.target}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'timestamp',
+      header: 'Data/Hora',
+      align: 'right',
+      render: (log) => <span className="whitespace-nowrap text-muted-foreground">{formatTime(log.timestamp)}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      align: 'right',
+      render: (log) => <span className="inline-flex justify-end">{renderLogStatus(log.status)}</span>,
+    },
+  ];
+
   return (
     <div id="visual-showcase-dashboard" className="flex flex-col gap-6 w-full text-left">
       
-      {/* Title Header matching original artwork */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex flex-col gap-1">
-          <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest leading-none">
-            Olá, {user?.name.split(' ')[0] || 'Admin'},
-          </p>
-          <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tight flex items-center gap-2">
-            👋 Bem-vindo de volta!
-          </h1>
-        </div>
-        
-        {/* Date Filters & Main Action CTA exactly as in image */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Today / Week filter capsule button */}
-          <div
-            role="group"
-            aria-label="Intervalo do dashboard"
-            className="inline-flex items-center p-1 rounded-xl bg-card border border-border bg-neutral-100/50 dark:bg-neutral-800/25"
-          >
-            <button
-              onClick={() => {
-                setTimeframe('today');
-                addNotification('Filtro alterado para: Hoje', 'info');
+      <PageHeader
+        eyebrow={`Ola, ${user?.name.split(' ')[0] || 'Admin'},`}
+        title="Bem-vindo de volta!"
+        actions={(
+          <>
+            <SegmentedControl<DashboardTimeframe>
+              items={timeframeItems}
+              value={timeframe}
+              onValueChange={(nextTimeframe) => {
+                setTimeframe(nextTimeframe);
+                addNotification(`Filtro alterado para: ${nextTimeframe === 'today' ? 'Hoje' : 'Semana'}`, 'info');
               }}
-              aria-pressed={timeframe === 'today'}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                timeframe === 'today'
-                  ? 'bg-white dark:bg-neutral-900 text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+              ariaLabel="Intervalo do dashboard"
+              size="sm"
+              className="bg-card/80"
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => addNotification('Filtro de calendario aberto', 'info')}
+              className="rounded-xl"
+              aria-label="Escolher periodo"
             >
-              Hoje
-            </button>
-            <button
-              onClick={() => {
-                setTimeframe('week');
-                addNotification('Filtro alterado para: Semana', 'info');
-              }}
-              aria-pressed={timeframe === 'week'}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                timeframe === 'week'
-                  ? 'bg-white dark:bg-neutral-900 text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+              <Calendar size={15} />
+            </Button>
+            <Button
+              onClick={triggerCreateProject}
+              className="rounded-xl bg-[#0084ff] px-4 text-xs font-bold text-white shadow-md shadow-[#0084ff]/10 hover:bg-[#0072f5] hover:shadow-[#0084ff]/20"
             >
-              Semana
-            </button>
-          </div>
+              <Plus size={15} className="stroke-[3]" />
+              <span className="truncate">Criar novo projeto</span>
+            </Button>
+          </>
+        )}
+      />
 
-          {/* Calendar Selector */}
-          <button
-            onClick={() => addNotification('Filtro de calendário aberto', 'info')}
-            className="h-9 w-9 bg-card border border-border rounded-xl text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors hover:bg-muted/30 cursor-pointer"
-            aria-label="Escolher período"
-          >
-            <Calendar size={15} />
-          </button>
-
-          {/* Primary project CTA */}
-          <button
-            onClick={triggerCreateProject}
-            className="h-9.5 px-4.5 rounded-xl bg-[#0084ff] hover:bg-[#0072f5] text-white text-xs font-bold transition-all shadow-md shadow-[#0084ff]/10 hover:shadow-[#0084ff]/20 active:scale-98 cursor-pointer flex items-center gap-1.5"
-          >
-            <Plus size={15} className="stroke-[3]" />
-            <span>Criar novo projeto</span>
-          </button>
-        </div>
-      </div>
 
       {/* Dynamic Health Warning Banner if DB Error is ON */}
       {!isHealthy && (
@@ -198,35 +314,15 @@ export function ShowcaseDashboard() {
               </p>
             </div>
 
-            {/* Total Revenue / Total Expenditure pill selectors */}
-            <div
-              role="group"
-              aria-label="Tipo de orçamento"
-              className="flex items-center gap-1.5 p-1 rounded-xl bg-neutral-100/60 dark:bg-neutral-800/30 border border-border self-start"
-            >
-              <button
-                onClick={() => setBalanceFilter('revenue')}
-                aria-pressed={balanceFilter === 'revenue'}
-                className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest transition-all ${
-                  balanceFilter === 'revenue'
-                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Receita projetada
-              </button>
-              <button
-                onClick={() => setBalanceFilter('expenditure')}
-                aria-pressed={balanceFilter === 'expenditure'}
-                className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest transition-all ${
-                  balanceFilter === 'expenditure'
-                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-black shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Despesa estimada
-              </button>
-            </div>
+            <SegmentedControl<BalanceFilter>
+              items={balanceFilterItems}
+              value={balanceFilter}
+              onValueChange={setBalanceFilter}
+              ariaLabel={'Tipo de or\u00e7amento'}
+              size="sm"
+              className="self-start bg-neutral-100/60 dark:bg-neutral-800/30"
+            />
+
           </div>
 
           {/* Glowing Wavy Line Chart exactly matching the reference artwork */}
@@ -547,39 +643,32 @@ export function ShowcaseDashboard() {
               </div>
             )}
 
-            {/* Blurred Table mock beneath overlay */}
-            <div className={`w-full overflow-x-auto ${subscription === 'free' ? 'filter blur-[5px] opacity-20 pointer-events-none select-none' : ''}`}>
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-border/50 text-muted-foreground uppercase text-[9px] font-black tracking-widest bg-muted/20">
-                    <th className="py-2.5 px-3">Responsável</th>
-                    <th className="py-2.5 px-3">Projeto</th>
-                    <th className="py-2.5 px-3">Status</th>
-                    <th className="py-2.5 px-3 text-right">Valor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-border/20">
-                    <td className="py-3 px-3 font-bold">Admin Starter</td>
-                    <td className="py-3 px-3">Ômega API Gateway</td>
-                    <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-green-500/15 text-green-500 uppercase text-[9px] font-bold">Sucesso</span></td>
-                    <td className="py-3 px-3 text-right font-mono font-bold">$1,450</td>
-                  </tr>
-                  <tr className="border-b border-border/20">
-                    <td className="py-3 px-3 font-bold">Equipe Plataforma</td>
-                    <td className="py-3 px-3">Kubernetes Multi-Replica</td>
-                    <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-amber-500/15 text-amber-500 uppercase text-[9px] font-bold">Em espera</span></td>
-                    <td className="py-3 px-3 text-right font-mono font-bold">$3,100</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-3 font-bold">Equipe Dados</td>
-                    <td className="py-3 px-3">Persistência mock multi-node</td>
-                    <td className="py-3 px-3"><span className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-500 uppercase text-[9px] font-bold">Processando</span></td>
-                    <td className="py-3 px-3 text-right font-mono font-bold font-black">$450</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className={`w-full ${subscription === 'free' ? 'filter blur-[5px] opacity-20 pointer-events-none select-none' : ''}`}>
+              <ResponsiveDataView<RecentProjectRow>
+                rows={recentProjectRows}
+                columns={recentProjectColumns}
+                getRowKey={(row) => row.id}
+                ariaLabel="Projetos recentes"
+                emptyState={{
+                  title: 'Nenhum projeto recente',
+                  description: 'Os projetos desbloqueados aparecem aqui conforme o uso do starter kit.',
+                }}
+                tableClassName="text-xs"
+                renderMobileCard={(row) => (
+                  <article className="rounded-xl border border-border/70 bg-muted/20 p-4">
+                    <div className="flex min-w-0 items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h4 className="break-anywhere text-sm font-black text-foreground">{row.project}</h4>
+                        <p className="mt-1 break-anywhere text-xs font-semibold text-muted-foreground">{row.owner}</p>
+                      </div>
+                      <span className="shrink-0 font-mono text-xs font-bold text-foreground">{row.value}</span>
+                    </div>
+                    <div className="mt-3">{renderProjectStatus(row.status)}</div>
+                  </article>
+                )}
+              />
             </div>
+
 
           </div>
 
@@ -667,63 +756,49 @@ export function ShowcaseDashboard() {
 
         {/* Activity Logs Table inside Card (col-span-2) */}
         <Card id="logs-history-card" className="md:col-span-2 border border-border bg-card shadow-sm rounded-2xl p-6">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-border/40">
+          <div className="mb-4 flex flex-col gap-3 border-b border-border/40 pb-3 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground">Eventos Operacionais Recentes</h3>
             <span className="text-[10px] text-muted-foreground font-bold">Rastro Auditável de Logs</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={forceRefresh}
+              className="w-full rounded-xl text-xs font-bold sm:w-auto"
+            >
+              <Activity size={13} />
+              <span>Varrer eventos</span>
+            </Button>
           </div>
 
-          <div className="w-full overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-border/80 text-muted-foreground uppercase text-[9px] font-black tracking-widest bg-muted/30">
-                  <th className="py-2.5 px-3">Operador</th>
-                  <th className="py-2.5 px-3">Ação Efetuada</th>
-                  <th className="py-2.5 px-3 text-right">Data/Hora</th>
-                  <th className="py-2.5 px-3 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {logs.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-muted-foreground font-medium">
-                      Nenhum evento registrado no pipeline do gateway.
-                    </td>
-                  </tr>
-                ) : (
-                  logs.slice(0, 3).map((log) => (
-                    <tr key={log.id} className="border-b border-border/20 last:border-b-0 hover:bg-muted/40 transition-colors">
-                      <td className="py-2.5 px-3">
-                        <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full border border-primary/25 bg-primary/10 flex items-center justify-center font-bold text-[8px] uppercase text-primary shrink-0">
-                            {log.userName.slice(0, 2)}
-                          </div>
-                          <span className="font-bold text-foreground truncate max-w-[100px]">{log.userName}</span>
-                        </div>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-foreground leading-none">{log.action}</span>
-                          <span className="font-mono text-[8px] text-muted-foreground mt-1 bg-muted px-1 py-0.5 rounded w-fit">{log.target}</span>
-                        </div>
-                      </td>
-                      <td className="py-2.5 px-3 text-right text-muted-foreground font-medium whitespace-nowrap">
-                        {formatTime(log.timestamp)}
-                      </td>
-                      <td className="py-2.5 px-3 text-right">
-                        <span className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${
-                          log.status === 'success'
-                            ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                            : 'bg-amber-500/10 text-amber-500'
-                        }`}>
-                          {log.status === 'success' ? 'OK' : 'AVISO'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          <ResponsiveDataView<DashboardLog>
+            rows={recentLogRows}
+            columns={logColumns}
+            getRowKey={(log) => log.id}
+            ariaLabel="Eventos operacionais recentes"
+            emptyState={{
+              title: 'Nenhum evento registrado',
+              description: 'Nenhum evento registrado no pipeline do gateway.',
+            }}
+            tableClassName="text-xs"
+            renderMobileCard={(log) => (
+              <article className="rounded-xl border border-border/70 bg-muted/20 p-4">
+                <div className="flex min-w-0 items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h4 className="break-anywhere text-sm font-black text-foreground">{log.action}</h4>
+                    <p className="mt-1 w-fit rounded bg-muted px-1 py-0.5 font-mono text-[10px] text-muted-foreground">
+                      {log.target}
+                    </p>
+                  </div>
+                  {renderLogStatus(log.status)}
+                </div>
+                <div className="mt-4 flex min-w-0 items-center justify-between gap-3 text-xs text-muted-foreground">
+                  <span className="break-anywhere font-bold text-foreground">{log.userName}</span>
+                  <span className="shrink-0 whitespace-nowrap">{formatTime(log.timestamp)}</span>
+                </div>
+              </article>
+            )}
+          />
+
         </Card>
 
       </div>

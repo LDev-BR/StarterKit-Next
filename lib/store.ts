@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { DEFAULT_APP_TAB, type AppTab } from '@/config/navigation';
 
 export interface Project {
   id: string;
@@ -33,8 +34,8 @@ interface SidebarSlice {
   setSidebar: (open: boolean) => void;
   isCollapsed: boolean;
   toggleCollapse: () => void;
-  currentTab: string;
-  setCurrentTab: (tab: string) => void;
+  currentTab: AppTab;
+  setCurrentTab: (tab: AppTab) => void;
   isMobileNotificationsOpen: boolean;
   setMobileNotificationsOpen: (open: boolean) => void;
 }
@@ -122,7 +123,7 @@ export const useAppStore = create<AppStateStore>((set, get) => ({
   setSidebar: (open) => set({ isOpen: open }),
   isCollapsed: false,
   toggleCollapse: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
-  currentTab: 'dashboard',
+  currentTab: DEFAULT_APP_TAB,
   setCurrentTab: (tab) => set({ currentTab: tab }),
   isMobileNotificationsOpen: false,
   setMobileNotificationsOpen: (open) => set({ isMobileNotificationsOpen: open }),

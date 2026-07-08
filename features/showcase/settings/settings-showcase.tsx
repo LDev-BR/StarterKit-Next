@@ -5,10 +5,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { useAppStore } from '@/lib/store';
+import { useAppStore, type ApiKey } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { PageHeader } from '@/components/ui/page-header';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { ResponsiveDataView, type DataColumn } from '@/components/ui/responsive-data-view';
 import { cn } from '@/lib/utils';
 import { 
   Key, 
@@ -23,7 +26,6 @@ import {
   Server,
   LogOut,
   Shield,
-  Activity,
   Sun,
   Moon,
   Monitor,
@@ -82,6 +84,20 @@ const settingsSections: Array<{
     icon: Layers,
   },
 ];
+
+const settingsSegmentItems: Array<{
+  value: SettingsSubTab;
+  label: string;
+  ariaLabel: string;
+  icon: LucideIcon;
+}> = settingsSections.map((section) => ({
+  value: section.id,
+  label: section.label,
+  ariaLabel: `Abrir ${section.label}`,
+  icon: section.icon,
+}));
+
+const maskApiKey = (key: string) => `${key.substring(0, 14)}........${key.substring(key.length - 6)}`;
 
 export function SettingsShowcase() {
   const shouldReduceMotion = useReducedMotion();
@@ -191,17 +207,130 @@ export function SettingsShowcase() {
     setIsSectionMenuOpen(false);
   };
 
+  const apiKeyColumns: Array<DataColumn<ApiKey>> = [
+    {
+      key: 'name',
+      header: 'Chave',
+      render: (key) => (
+        <div className="min-w-0 space-y-1">
+          <span className="break-anywhere text-xs font-black uppercase tracking-tight text-foreground">
+            {key.name}
+          </span>
+          <span className="block text-[10px] font-semibold text-muted-foreground">
+            Criada para validação visual do starter kit
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'token',
+      header: 'Token',
+      render: (key) => (
+        <code className="break-all rounded border border-border/60 bg-background px-2 py-1 font-mono text-[10px] font-bold text-muted-foreground select-all">
+          {maskApiKey(key.key)}
+        </code>
+      ),
+    },
+    {
+      key: 'usage',
+      header: 'Uso',
+      align: 'right',
+      render: (key) => (
+        <span className="text-[10px] font-bold text-muted-foreground">
+          {key.lastUsed !== 'Nunca' ? 'Há 5m' : 'Nunca'}
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      header: 'Ações',
+      align: 'right',
+      render: (key) => (
+        <div className="flex justify-end gap-1.5">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => handleCopyKey(key.id, key.key)}
+            className="h-9 w-9 text-muted-foreground hover:text-foreground"
+            aria-label={`Copiar chave ${key.name} na tabela`}
+          >
+            {copiedKeyId === key.id ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
+          </Button>
+          <Button
+            id={`btn-revoke-key-${key.id}-table`}
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => handleRevokeKey(key.id, key.name)}
+            aria-label={`Revogar chave ${key.name} na tabela`}
+            className="h-9 w-9 text-muted-foreground hover:bg-rose-500/15 hover:text-rose-500"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  const renderApiKeyMobileCard = (key: ApiKey) => (
+    <article className="min-w-0 rounded-lg border border-border bg-muted/20 p-3">
+      <div className="flex min-w-0 items-start justify-between gap-3">
+        <div className="min-w-0 space-y-1">
+          <h3 className="break-anywhere text-xs font-black uppercase tracking-tight text-foreground">
+            {key.name}
+          </h3>
+          <code className="block break-all rounded border border-border/60 bg-background px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground select-all">
+            {maskApiKey(key.key)}
+          </code>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => handleCopyKey(key.id, key.key)}
+            className="h-9 w-9 text-muted-foreground hover:text-foreground"
+            aria-label={`Copiar chave ${key.name} no card móvel`}
+          >
+            {copiedKeyId === key.id ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
+          </Button>
+          <Button
+            id={`btn-revoke-key-${key.id}-card`}
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => handleRevokeKey(key.id, key.name)}
+            aria-label={`Revogar chave ${key.name} no card móvel`}
+            className="h-9 w-9 text-muted-foreground hover:bg-rose-500/15 hover:text-rose-500"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      <p className="mt-3 border-t border-border/40 pt-2 text-[10px] font-bold text-muted-foreground">
+        Uso: {key.lastUsed !== 'Nunca' ? 'Há 5m' : 'Nunca'}
+      </p>
+    </article>
+  );
+
   return (
     <div id="settings-showcase-container" className="space-y-6 text-left">
-      {/* Title block */}
-      <div>
-        <h1 className="text-2xl font-black tracking-tight text-foreground md:text-3xl uppercase">
-          Configurações Integradas
-        </h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Gerencie seu perfil operativo, controle chaves demonstrativas de API e administre conectores locais simulados.
-        </p>
-      </div>
+      <PageHeader
+        id="settings-page-header"
+        eyebrow="Preferências"
+        title="Configurações Integradas"
+        description="Gerencie seu perfil operativo, controle chaves demonstrativas de API e administre conectores locais simulados."
+        icon={Key}
+      />
 
       {/* Internal Settings Subtab Navigator */}
       <div
@@ -296,51 +425,15 @@ export function SettingsShowcase() {
         </AnimatePresence>
       </div>
 
-      <div className="hidden border-b border-border/60 gap-4 md:flex">
-        <button
-          onClick={() => setActiveSubTab('profile')}
-          aria-pressed={activeSubTab === 'profile'}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
-            activeSubTab === 'profile'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Perfil & Segurança JWT
-        </button>
-        <button
-          onClick={() => setActiveSubTab('appearance')}
-          aria-pressed={activeSubTab === 'appearance'}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
-            activeSubTab === 'appearance'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Aparência do Painel
-        </button>
-        <button
-          onClick={() => setActiveSubTab('infrastructure')}
-          aria-pressed={activeSubTab === 'infrastructure'}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
-            activeSubTab === 'infrastructure'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Conectores de API & Infra
-        </button>
-        <button
-          onClick={() => setActiveSubTab('design')}
-          aria-pressed={activeSubTab === 'design'}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-b-2 px-1 relative top-[1px] ${
-            activeSubTab === 'design'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Design System
-        </button>
+      <div className="hidden md:block">
+        <SegmentedControl
+          items={settingsSegmentItems}
+          value={activeSubTab}
+          onValueChange={handleSectionChange}
+          ariaLabel="Seções de configurações"
+          size="sm"
+          className="w-full justify-start bg-card/50"
+        />
       </div>
 
       {activeSubTab === 'profile' ? (
@@ -392,21 +485,21 @@ export function SettingsShowcase() {
                   </div>
                   <div>
                     <span className="text-muted-foreground block font-semibold">Token de Sessão</span>
-                    <span className="font-mono text-[9px] text-muted-foreground block mt-1.5 truncate">
+                    <span className="font-mono text-[9px] text-muted-foreground block mt-1.5 break-all">
                       {user.token}
                     </span>
                   </div>
                 </div>
               )}
             </CardContent>
-            <CardFooter className="border-t border-border/40 bg-muted/10 px-6 py-4 flex justify-between items-center gap-4">
-              <p className="text-[10px] text-muted-foreground leading-snug">
+            <CardFooter className="border-t border-border/40 bg-muted/10 px-6 py-4 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="break-anywhere text-[10px] text-muted-foreground leading-snug">
                 Mudanças aplicam-se instantaneamente na sidebar e fluxo de logs.
               </p>
               <Button
                 id="btn-profile-save"
                 type="submit"
-                className="h-9 px-4 shrink-0 font-bold text-xs"
+                className="w-full px-4 shrink-0 font-bold text-xs sm:w-auto"
                 isLoading={savingProfile}
               >
                 Atualizar Perfil
@@ -441,17 +534,17 @@ export function SettingsShowcase() {
                 </div>
 
                 {user && (
-                  <div className="space-y-2.5 bg-muted/40 border border-border/80 rounded-xl p-3.5 relative overflow-hidden font-mono text-[9px] leading-relaxed text-muted-foreground text-left whitespace-pre-wrap select-all">
+                  <div className="space-y-2.5 bg-muted/40 border border-border/80 rounded-xl p-3.5 relative overflow-hidden font-mono text-[9px] leading-relaxed text-muted-foreground text-left whitespace-pre-wrap break-all select-all">
                     Bearer {user.token}
                   </div>
                 )}
 
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <Button
                     id="btn-copy-jwt"
                     variant="outline"
                     onClick={handleCopyToken}
-                    className="flex-1 text-xs font-black uppercase tracking-wider h-9 gap-1.5 cursor-pointer"
+                    className="flex-1 text-xs font-black uppercase tracking-wider gap-1.5 cursor-pointer"
                   >
                     {copiedToken ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                     Copiar Token Bearer
@@ -461,7 +554,7 @@ export function SettingsShowcase() {
                     id="btn-perform-logout"
                     variant="ghost"
                     onClick={logout}
-                    className="h-9 font-black text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 uppercase tracking-wider cursor-pointer"
+                    className="font-black text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 uppercase tracking-wider cursor-pointer"
                   >
                     <LogOut className="h-4 w-4 mr-1.5" /> Sair
                   </Button>
@@ -489,11 +582,12 @@ export function SettingsShowcase() {
                 {/* Light Theme Button */}
                 <button
                   type="button"
+                  aria-pressed={theme === 'light'}
                   onClick={() => {
                     setTheme('light');
                     addNotification('Tema alterado para Modo Claro!', 'success');
                   }}
-                  className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all cursor-pointer text-center gap-3 ${
+                  className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all cursor-pointer text-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     theme === 'light'
                       ? 'border-primary bg-primary/5 text-primary scale-[1.02]'
                       : 'border-border/60 hover:border-border hover:bg-muted/30 text-muted-foreground hover:text-foreground'
@@ -509,11 +603,12 @@ export function SettingsShowcase() {
                 {/* Dark Theme Button */}
                 <button
                   type="button"
+                  aria-pressed={theme === 'dark'}
                   onClick={() => {
                     setTheme('dark');
                     addNotification('Tema alterado para Modo Escuro!', 'success');
                   }}
-                  className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all cursor-pointer text-center gap-3 ${
+                  className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all cursor-pointer text-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     theme === 'dark'
                       ? 'border-primary bg-primary/5 text-primary scale-[1.02]'
                       : 'border-border/60 hover:border-border hover:bg-muted/30 text-muted-foreground hover:text-foreground'
@@ -529,11 +624,12 @@ export function SettingsShowcase() {
                 {/* System Theme Button */}
                 <button
                   type="button"
+                  aria-pressed={theme === 'system'}
                   onClick={() => {
                     setTheme('system');
                     addNotification('Tema ajustado para seguir as preferências do Sistema!', 'success');
                   }}
-                  className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all cursor-pointer text-center gap-3 ${
+                  className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all cursor-pointer text-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     theme === 'system'
                       ? 'border-primary bg-primary/5 text-primary scale-[1.02]'
                       : 'border-border/60 hover:border-border hover:bg-muted/30 text-muted-foreground hover:text-foreground'
@@ -551,7 +647,7 @@ export function SettingsShowcase() {
                 <span className="text-muted-foreground block font-semibold">Status do Resolvedor de Temas</span>
                 <div className="flex items-center gap-2 mt-2">
                   <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-wider text-foreground">
+                  <span className="break-anywhere text-[10px] font-black uppercase tracking-wider text-foreground">
                     Modo {resolvedTheme === 'dark' ? 'Escuro' : 'Claro'} Configurado Ativamente (Classes DOM Sincronizadas)
                   </span>
                 </div>
@@ -577,75 +673,37 @@ export function SettingsShowcase() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Generate Key Input */}
-                <form onSubmit={handleGenerateKey} className="flex gap-2">
-                  <input
+                <form onSubmit={handleGenerateKey} className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                  <Input
+                    label="Nome da chave de API"
                     type="text"
                     required
-                    aria-label="Nome da chave de API"
                     placeholder="Nome do Token (Ex: Staging Gateway)"
                     value={newKeyName}
                     onChange={(e) => setNewKeyName(e.target.value)}
-                    className="bg-background border border-border rounded-lg h-9 flex-1 px-3 text-xs font-semibold text-foreground focus:outline-none focus:border-primary transition-colors"
+                    className="font-semibold"
                   />
-                  <Button id="btn-generate-key" type="submit" size="sm" className="gap-2 shrink-0 cursor-pointer text-xs font-bold">
+                  <Button id="btn-generate-key" type="submit" size="sm" className="w-full gap-2 shrink-0 cursor-pointer text-xs font-bold sm:w-auto">
                     <Plus className="h-3.5 w-3.5" /> Gerar Chave
                   </Button>
                 </form>
 
                 {/* Keys Lists */}
-                <div className="space-y-2.5 pt-2">
-                  {apiKeys.length === 0 ? (
-                    <p className="text-xs text-muted-foreground text-center py-4 font-semibold">
-                      Nenhuma chave cadastrada atualmente.
-                    </p>
-                  ) : (
-                    apiKeys.map((key) => (
-                      <div
-                        key={key.id}
-                        className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-border rounded-lg bg-muted/20 gap-3"
-                      >
-                        <div className="space-y-1">
-                          <span className="text-xs font-black text-foreground uppercase tracking-tight">
-                            {key.name}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <code className="text-[10px] bg-background border border-border/60 text-muted-foreground px-1.5 py-0.5 rounded font-mono select-all font-bold">
-                              {key.key.substring(0, 14)}••••••••{key.key.substring(key.key.length - 6)}
-                            </code>
-                            <button
-                              type="button"
-                              onClick={() => handleCopyKey(key.id, key.key)}
-                              className="text-muted-foreground hover:text-foreground cursor-pointer"
-                              aria-label={`Copiar chave ${key.name}`}
-                            >
-                              {copiedKeyId === key.id ? (
-                                <Check className="h-3.5 w-3.5 text-green-500" />
-                              ) : (
-                                <Copy className="h-3.5 w-3.5" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 w-full sm:w-auto justify-end border-t sm:border-t-0 border-border/40 pt-2 sm:pt-0">
-                          <span className="text-[9px] text-muted-foreground font-bold">
-                            Uso: {key.lastUsed !== 'Nunca' ? 'Há 5m' : 'Nunca'}
-                          </span>
-                          <Button
-                            id={`btn-revoke-key-${key.id}`}
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRevokeKey(key.id, key.name)}
-                            aria-label={`Revogar chave ${key.name}`}
-                            className="h-7 w-7 p-0 text-muted-foreground hover:bg-rose-500/15 hover:text-rose-500 cursor-pointer"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+                <ResponsiveDataView
+                  rows={apiKeys}
+                  columns={apiKeyColumns}
+                  getRowKey={(key) => key.id}
+                  ariaLabel="Chaves de API ativas"
+                  emptyState={{
+                    icon: <Key className="h-10 w-10 text-muted-foreground stroke-1" />,
+                    title: 'Nenhuma chave cadastrada atualmente',
+                    description: 'Gere uma chave demonstrativa para validar estados de lista, cópia e revogação.',
+                    className: 'max-w-none py-6',
+                  }}
+                  renderMobileCard={renderApiKeyMobileCard}
+                  className="pt-2"
+                  tableClassName="min-w-[42rem]"
+                />
               </CardContent>
             </Card>
 
@@ -662,8 +720,8 @@ export function SettingsShowcase() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-foreground font-bold uppercase tracking-tight">Latência das Requisições</span>
+                  <div className="flex flex-wrap justify-between gap-2 text-xs">
+                    <span className="break-anywhere text-foreground font-bold uppercase tracking-tight">Latência das Requisições</span>
                     <span className="text-primary font-bold font-mono bg-primary/10 px-1.5 py-0.5 rounded">{config.mockLatency}ms</span>
                   </div>
                   <input
@@ -677,12 +735,12 @@ export function SettingsShowcase() {
                       updateConfig({ mockLatency: Number(e.target.value) });
                       addNotification(`Latência simulação ajustada: ${e.target.value}ms`, 'info');
                     }}
-                    className="w-full accent-primary bg-muted rounded-lg h-1.5 cursor-pointer"
+                    className="w-full accent-primary bg-muted rounded-lg h-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background"
                   />
                 </div>
 
-                <div className="border-t border-border/60 pt-4 flex items-center justify-between">
-                  <div>
+                <div className="border-t border-border/60 pt-4 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
                     <span className="text-xs font-black uppercase tracking-tight text-foreground block">
                       Simular Erro de Banco de Dados
                     </span>
@@ -702,7 +760,7 @@ export function SettingsShowcase() {
                         nextVal ? 'error' : 'success'
                       );
                     }}
-                    className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                       config.simulateDbFailure ? 'bg-rose-500' : 'bg-muted'
                     }`}
                   >
@@ -734,7 +792,7 @@ export function SettingsShowcase() {
             className="lg:col-span-5 bg-card border border-border rounded-xl shadow-xs overflow-hidden"
           >
             <div className="px-5 py-4 border-b border-border bg-muted/20 flex justify-between items-center">
-              <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-2">
+              <span className="break-anywhere text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-2">
                 <Database className="h-4 w-4 text-primary" /> Parâmetros de conexão mock
               </span>
               <span className="text-[9px] px-2 py-0.5 bg-primary/10 text-primary rounded font-black uppercase tracking-wider">
@@ -761,7 +819,7 @@ export function SettingsShowcase() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-1">
                   <Input
                     label="Porta TCP"
@@ -782,14 +840,14 @@ export function SettingsShowcase() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-border/40 flex justify-between items-center gap-4">
-                <p className="text-[10px] text-muted-foreground">
+              <div className="pt-4 border-t border-border/40 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="break-anywhere text-[10px] text-muted-foreground">
                   Simula variáveis de ambiente para validação visual local.
                 </p>
                 <Button
                   id="btn-settings-infra-save"
                   type="submit"
-                  className="h-9 px-4 shrink-0 font-bold text-xs"
+                  className="w-full px-4 shrink-0 font-bold text-xs sm:w-auto"
                   isLoading={savingConfig}
                 >
                   Salvar Parâmetros

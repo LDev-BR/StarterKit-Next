@@ -5,9 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAppStore } from '@/lib/store';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { EmptyState } from '@/components/ui/empty-state';
+import { PageHeader } from '@/components/ui/page-header';
 import { SlideIn } from '@/components/animations/motion-presets';
 import { 
   FolderKanban, 
@@ -17,7 +19,6 @@ import {
   Mail, 
   Info, 
   DollarSign, 
-  CheckCircle,
   X,
   Filter
 } from 'lucide-react';
@@ -128,63 +129,64 @@ export function FormShowcase() {
 
   return (
     <div id="project-manager-container" className="space-y-6 text-left">
-      {/* Title Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
-            Gerenciamento de Projetos
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5 max-w-2xl">
-            Painel corporativo para pesquisar, filiar, analisar orçamentos e provisionar novos ambientes de software.
-          </p>
-        </div>
-        
-        {!showAddForm && (
+      <PageHeader
+        id="projects-page-header"
+        eyebrow="Projetos"
+        title="Gerenciamento de Projetos"
+        description="Painel corporativo para pesquisar, filiar, analisar orçamentos e provisionar novos ambientes de software."
+        icon={FolderKanban}
+        actions={!showAddForm ? (
           <Button
             id="btn-open-project-form"
             variant="default"
             size="sm"
             onClick={() => setShowAddForm(true)}
-            className="gap-2 cursor-pointer font-bold"
+            className="w-full gap-2 cursor-pointer font-bold sm:w-auto"
           >
             <Plus className="h-4 w-4" /> Provisionar Projeto
           </Button>
-        )}
-      </div>
+        ) : undefined}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Main interactive column */}
         <div className={showAddForm ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
           {/* Filters & Actions Panel */}
           <Card id="project-filter-card" className="p-4">
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
-              <div className="relative flex-1">
-                <span className="absolute left-3 top-3 text-muted-foreground">
-                  <Search className="h-4 w-4" />
-                </span>
-                <input
-                  type="text"
-                  aria-label="Pesquisar projetos"
-                  placeholder="Pesquisar por nome, descrição ou e-mail..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-background border border-border rounded-lg h-10 w-full pl-9 pr-4 text-xs font-semibold text-foreground focus:outline-none focus:border-primary transition-colors"
-                />
-              </div>
+            <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(13rem,18rem)]">
+              <Input
+                id="project-search"
+                label="Pesquisar projetos"
+                type="search"
+                icon={<Search className="h-4 w-4" aria-hidden="true" />}
+                placeholder="Nome, descrição ou e-mail..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="font-semibold"
+              />
 
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div className="flex min-w-0 flex-col gap-1.5 text-left">
+                <label
+                  htmlFor="project-plan-filter"
+                  className="text-sm font-medium tracking-tight text-foreground select-none"
+                >
+                  Filtrar por plano
+                </label>
+                <div className="relative">
+                  <Filter className="pointer-events-none absolute left-3 top-3 h-4 w-4 shrink-0 text-muted-foreground" />
                 <select
+                  id="project-plan-filter"
                   aria-label="Filtrar projetos por plano"
                   value={planFilter}
                   onChange={(e) => setPlanFilter(e.target.value)}
-                  className="bg-background border border-border rounded-lg h-10 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
+                  className="h-10 w-full rounded-lg border border-border bg-background px-3 pl-9 text-sm font-semibold text-foreground transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
                 >
                   <option value="all">Filtro: Todos Planos</option>
                   <option value="startup">Startup Core</option>
                   <option value="enterprise">Enterprise Scaled</option>
                   <option value="custom">Custom Platinum</option>
                 </select>
+                </div>
               </div>
             </div>
           </Card>
@@ -192,34 +194,36 @@ export function FormShowcase() {
           {/* Active Projects List */}
           <div className="space-y-4">
             {filteredProjects.length === 0 ? (
-              <Card id="empty-projects-card" className="p-12 text-center flex flex-col items-center justify-center border-dashed">
-                <FolderKanban className="h-12 w-12 text-muted-foreground opacity-50 mb-4" />
-                <h3 className="text-sm font-bold text-foreground">Nenhum projeto localizado</h3>
-                <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-                  Crie um novo projeto usando o formulário de provisionamento para que seja listado no cluster local.
-                </p>
-              </Card>
+              <EmptyState
+                id="empty-projects-card"
+                icon={<FolderKanban className="h-12 w-12 text-muted-foreground opacity-60" />}
+                title="Nenhum projeto localizado"
+                description="Crie um novo projeto usando o formulário de provisionamento para que seja listado no cluster local."
+                actionText={!showAddForm ? 'Provisionar projeto' : undefined}
+                onAction={!showAddForm ? () => setShowAddForm(true) : undefined}
+                className="max-w-none p-10"
+              />
             ) : (
               <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
                 {filteredProjects.map((project) => (
                   <SlideIn key={project.id} direction="up">
-                    <Card id={`project-card-${project.id}`} isHoverable className="p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                      <div className="space-y-1.5 flex-1 pr-4">
+                    <Card id={`project-card-${project.id}`} isHoverable className="flex min-w-0 flex-col items-start justify-between gap-4 p-5 md:flex-row md:items-center">
+                      <div className="min-w-0 flex-1 space-y-1.5 md:pr-4">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-black text-sm text-foreground uppercase tracking-tight">
+                          <h3 className="break-anywhere font-black text-sm text-foreground uppercase tracking-tight">
                             {project.projectName}
                           </h3>
                           <span className={`px-2 py-0.5 rounded-full text-[9px] font-black border uppercase ${getPlanBadge(project.billingPlan)}`}>
                             {project.billingPlan}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
+                        <p className="break-anywhere text-xs text-muted-foreground leading-relaxed">
                           {project.projectDescription}
                         </p>
-                        <div className="flex items-center gap-4 text-[10px] text-muted-foreground font-semibold">
-                          <span className="flex items-center gap-1">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-muted-foreground font-semibold">
+                          <span className="flex min-w-0 items-center gap-1">
                             <Mail className="h-3.5 w-3.5 text-muted-foreground/75" />
-                            {project.contactEmail}
+                            <span className="break-all">{project.contactEmail}</span>
                           </span>
                           <span className="flex items-center gap-0.5 text-foreground font-bold">
                             <DollarSign className="h-3 w-3 text-emerald-500" />
@@ -252,17 +256,19 @@ export function FormShowcase() {
         {showAddForm && (
           <SlideIn direction="left" className="lg:col-span-5 bg-card border border-border rounded-xl shadow-xs overflow-hidden">
             <div className="px-5 py-4 border-b border-border flex justify-between items-center bg-muted/20">
-              <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-2">
+              <span className="break-anywhere text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-2">
                 <FolderKanban className="h-4 w-4 text-primary" /> Provisionar Ambiente
               </span>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowAddForm(false)}
-                className="text-muted-foreground hover:text-foreground cursor-pointer"
+                className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
                 aria-label="Fechar formulário de projeto"
               >
                 <X className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
 
             <form onSubmit={handleSubmit(onSubmitProject)} className="p-5 space-y-4">
@@ -295,7 +301,7 @@ export function FormShowcase() {
                   rows={3}
                   aria-invalid={!!errors.projectDescription}
                   aria-describedby={errors.projectDescription ? 'projectDescription-error' : undefined}
-                  className={`flex w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all ${
+                  className={`flex min-h-24 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-semibold text-foreground placeholder:text-muted-foreground transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary ${
                     errors.projectDescription ? 'border-red-500' : ''
                   }`}
                   {...register('projectDescription')}
@@ -305,14 +311,14 @@ export function FormShowcase() {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="billingPlan" className="text-xs font-black uppercase tracking-wider text-muted-foreground select-none">
                     Contrato
                   </label>
                   <select
                     id="billingPlan"
-                    className="flex h-10 w-full rounded-lg border border-border bg-background px-2 text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
+                    className="flex h-10 w-full rounded-lg border border-border bg-background px-2 text-sm font-bold text-foreground transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
                     {...register('billingPlan')}
                   >
                     <option value="startup">Startup Core</option>
@@ -351,7 +357,7 @@ export function FormShowcase() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-border/40 flex justify-end gap-2 text-right">
+              <div className="pt-4 border-t border-border/40 flex flex-col-reverse gap-2 text-right sm:flex-row sm:justify-end">
                 <Button
                   id="btn-form-cancel"
                   type="button"
@@ -361,7 +367,7 @@ export function FormShowcase() {
                     reset();
                     setShowAddForm(false);
                   }}
-                  className="font-bold"
+                  className="w-full font-bold sm:w-auto"
                 >
                   Voltar
                 </Button>
@@ -370,7 +376,7 @@ export function FormShowcase() {
                   type="submit"
                   size="sm"
                   variant="default"
-                  className="font-bold"
+                  className="w-full font-bold sm:w-auto"
                   isLoading={submitting}
                 >
                   Gravar Projeto
@@ -382,11 +388,11 @@ export function FormShowcase() {
       </div>
 
       {/* Underlay Info for Real Backend */}
-      <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 flex gap-4">
+      <div className="flex flex-col gap-4 rounded-xl border border-primary/10 bg-primary/5 p-5 sm:flex-row">
         <Info className="h-6 w-6 text-primary shrink-0 mt-0.5" />
-        <div className="space-y-1">
+        <div className="min-w-0 space-y-1">
           <h4 className="text-xs font-black uppercase text-foreground">Caminho para persistência futura</h4>
-          <p className="text-xs text-muted-foreground leading-relaxed leading-medium">
+          <p className="break-anywhere text-xs text-muted-foreground leading-relaxed">
             Toda a lógica interativa acima usa estado em memória e mocks. Na próxima fase, congele o contrato de projetos antes de escolher endpoints, persistência real ou ORM.
           </p>
         </div>

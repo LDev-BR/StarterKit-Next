@@ -27,18 +27,21 @@ export function MainContent({ children }: MainContentProps) {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-background relative overflow-x-clip">
+    <div className="relative flex min-h-screen min-w-0 flex-1 flex-col overflow-x-clip bg-background">
       <Header />
 
       {/* Primary viewport content slot */}
-      <main id="primary-main-content" className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto flex flex-col gap-6 min-w-0 overflow-x-hidden md:overflow-x-visible">
+      <main
+        id="primary-main-content"
+        className="mx-auto flex w-full max-w-7xl min-w-0 flex-1 flex-col gap-6 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 md:overflow-x-visible md:px-8 md:py-8"
+      >
         {children}
       </main>
 
       {/* Footer Area */}
-      <footer className="w-full border-t border-border/60 py-4 px-4 md:px-8 flex flex-col sm:flex-row items-center justify-between mt-auto bg-card/20 select-none text-[10px] text-muted-foreground font-semibold uppercase tracking-widest gap-2">
-        <div>Construído com Princípios SOLID & DRY</div>
-        <div className="flex gap-4">
+      <footer className="mt-auto flex w-full flex-col items-center justify-between gap-2 border-t border-border/60 bg-card/20 px-4 py-4 text-center text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:flex-row md:px-8">
+        <div className="break-anywhere">Construído com Princípios SOLID & DRY</div>
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1">
           <span>ESLint</span>
           <span>TypeScript</span>
           <span>Vitest</span>
@@ -47,7 +50,7 @@ export function MainContent({ children }: MainContentProps) {
       </footer>
 
       {/* Notification Toast System overlay */}
-      <div className="fixed bottom-20 left-4 right-4 md:bottom-6 md:right-6 md:left-auto md:max-w-sm z-50 flex flex-col gap-2.5 pointer-events-none">
+      <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-50 flex flex-col gap-2.5 md:bottom-6 md:left-auto md:right-6 md:max-w-sm">
         <AnimatePresence>
           {notifications.map((toast) => (
             <motion.div
@@ -56,7 +59,7 @@ export function MainContent({ children }: MainContentProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               layout
-              className="glass-effect rounded-lg p-3.5 border border-border/80 shadow-md flex gap-3 items-start pointer-events-auto select-none"
+                className="glass-effect pointer-events-auto flex items-start gap-3 rounded-lg border border-border/80 p-3.5 shadow-md"
             >
               <div className="pt-0.5 shrink-0">
                 {iconMap[toast.type]}
@@ -68,7 +71,7 @@ export function MainContent({ children }: MainContentProps) {
               </div>
               <button
                 onClick={() => removeNotification(toast.id)}
-                className="text-muted-foreground hover:text-foreground cursor-pointer shrink-0 transition-colors p-0.5"
+                className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 aria-label="Remover notificação"
               >
                 <X className="h-3.5 w-3.5" />
@@ -101,7 +104,7 @@ export function MainContent({ children }: MainContentProps) {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed inset-x-0 bottom-0 bg-card border-t border-border rounded-t-3xl shadow-2xl p-6 z-[100] pb-10 flex flex-col max-h-[85vh] pointer-events-auto text-left"
+              className="pointer-events-auto fixed inset-x-0 bottom-0 z-[100] flex max-h-[85vh] flex-col rounded-t-3xl border-t border-border bg-card p-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-left shadow-2xl"
             >
               {/* Drag Handle Indicator */}
               <div className="mx-auto w-12 h-1.5 rounded-full bg-border/80 mb-5 shrink-0" />
@@ -115,7 +118,7 @@ export function MainContent({ children }: MainContentProps) {
                   type="button"
                   onClick={() => setMobileNotificationsOpen(false)}
                   aria-label="Fechar avisos operacionais"
-                  className="p-1 px-2.5 rounded-lg bg-muted text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer"
+                  className="rounded-lg bg-muted px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   Fechar
                 </button>
@@ -150,14 +153,14 @@ export function MainContent({ children }: MainContentProps) {
                     clearNotifications();
                     setMobileNotificationsOpen(false);
                   }}
-                  className="flex-1 py-3 px-4 bg-[#db2777]/10 hover:bg-[#db2777]/15 border border-[#db2777]/25 text-[#db2777] font-black uppercase text-[10px] tracking-widest rounded-xl transition-all cursor-pointer text-center"
+                  className="flex-1 rounded-xl border border-[#db2777]/25 bg-[#db2777]/10 px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-[#db2777] transition-all hover:bg-[#db2777]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   Limpar Alertas
                 </button>
                 <button
                   type="button"
                   onClick={() => setMobileNotificationsOpen(false)}
-                  className="flex-1 py-3 px-4 bg-primary text-primary-foreground font-black uppercase text-[10px] tracking-widest rounded-xl shadow-md cursor-pointer text-center"
+                  className="flex-1 rounded-xl bg-primary px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-primary-foreground shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   Continuar
                 </button>

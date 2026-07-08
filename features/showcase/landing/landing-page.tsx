@@ -187,7 +187,7 @@ export function LandingPage() {
   };
 
   return (
-    <div id="landing-page-root" className="min-h-screen bg-background relative overflow-x-hidden antialiased text-left select-none text-foreground border-b border-border/20">
+    <div id="landing-page-root" className="relative min-h-screen overflow-x-hidden border-b border-border/20 bg-background text-left text-foreground antialiased">
       
       {/* Barra de Progresso de Rolagem */}
       <div 
@@ -196,10 +196,6 @@ export function LandingPage() {
         style={{ width: `${scrollProgress}%` }}
       />
       
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-primary/5 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-1/3 right-1/4 h-[500px] w-[500px] rounded-full bg-primary/3 blur-[140px] pointer-events-none z-0" />
-
       {/* Landing Navbar */}
       <header className="sticky top-0 w-full z-40 bg-background/70 backdrop-blur-md border-b border-border/60">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
@@ -214,29 +210,32 @@ export function LandingPage() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-black uppercase tracking-wider text-muted-foreground">
-            <a href="#features" className="hover:text-foreground transition-all">Recursos</a>
-            <a href="#architecture" className="hover:text-foreground transition-all">Arquitetura</a>
-            <a href="#pricing" className="hover:text-foreground transition-all">Preços</a>
-            <a href="#faq" className="hover:text-foreground transition-all">Dúvidas</a>
+            <a href="#features" className="rounded-md transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background">Recursos</a>
+            <a href="#architecture" className="rounded-md transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background">Arquitetura</a>
+            <a href="#pricing" className="rounded-md transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background">Preços</a>
+            <a href="#faq" className="rounded-md transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background">Dúvidas</a>
           </nav>
 
           <div className="flex items-center gap-3.5">
             <button
+              type="button"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="h-8 w-8 rounded-lg border border-border bg-card/40 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card/40 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Alternar tema"
             >
               <Sparkles className="h-4 w-4" />
             </button>
             <button 
+              type="button"
               onClick={() => setAuthView('login')}
-              className="text-xs font-black uppercase tracking-wider text-muted-foreground hover:text-foreground transition-all px-3 py-1.5 cursor-pointer"
+              className="rounded-lg px-3 py-1.5 text-xs font-black uppercase tracking-wider text-muted-foreground transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Entrar
             </button>
             <button 
+              type="button"
               onClick={() => setAuthView('register')}
-              className="bg-foreground text-background text-xs font-black uppercase tracking-wider h-8 px-4 rounded-lg hover:bg-foreground/80 transition-colors cursor-pointer inline-flex items-center"
+              className="inline-flex h-8 items-center rounded-lg bg-foreground px-4 text-xs font-black uppercase tracking-wider text-background transition-colors hover:bg-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Registrar
             </button>
@@ -245,7 +244,7 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 min-h-[calc(100vh-4rem)] flex flex-col justify-between items-center text-center">
+      <section className="relative z-10 mx-auto flex min-h-[calc(88svh-4rem)] max-w-7xl flex-col items-center justify-center px-4 py-8 text-center md:px-8 md:py-10">
         {/* Spacer to push content down for perfect alignment */}
         <div className="hidden md:block h-6" />
 
@@ -254,7 +253,7 @@ export function LandingPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-6 flex-1 flex flex-col justify-center items-center py-6"
+          className="flex w-full max-w-5xl flex-col items-center justify-center space-y-5 py-4"
         >
           {/* Badge */}
           <motion.div 
@@ -271,7 +270,7 @@ export function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-6xl font-black tracking-tight text-foreground max-w-4xl mx-auto leading-tight md:leading-[1.1]"
+            className="text-balance-safe mx-auto max-w-4xl text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl md:text-6xl md:leading-[1.1]"
           >
             Kit de Partida Front-End <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-foreground">
@@ -284,7 +283,7 @@ export function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed mt-2"
+            className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base"
           >
             Desenvolva seu próximo SaaS com uma base frontend tipada, mocks explícitos e fluxos visuais preparados para a fase futura de contratos, backend e persistência.
           </motion.p>
@@ -294,7 +293,7 @@ export function LandingPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
+            className="flex w-full flex-col items-center justify-center gap-3 pt-3 sm:w-auto sm:flex-row sm:gap-4 md:pt-5"
           >
             <Button
               size="lg"
@@ -305,22 +304,100 @@ export function LandingPage() {
             </Button>
             
             <button
+              type="button"
               onClick={handleTestSession}
-              className="w-full sm:w-auto h-11 border border-border bg-card/30 rounded-xl hover:bg-muted/40 transition-all text-xs font-black uppercase tracking-wider px-8 cursor-pointer flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/30 px-8 text-xs font-black uppercase tracking-wider text-muted-foreground transition-all hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto"
             >
               <Cpu className="h-4 w-4 text-primary" /> Entrar Sessão Rápida (Luis)
             </button>
           </motion.div>
+
+          <motion.div
+            aria-label="Prévia do painel SaaS Starter"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.55 }}
+            className="w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-card/80 text-left shadow-lg backdrop-blur-sm"
+          >
+            <div className="flex items-center justify-between border-b border-border/70 bg-muted/35 px-4 py-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                <span className="truncate text-[10px] font-black uppercase tracking-widest text-foreground">
+                  StarterKit Console
+                </span>
+              </div>
+              <span className="hidden text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:inline">
+                Next.js 16 + TypeScript
+              </span>
+            </div>
+
+            <div className="grid gap-0 md:grid-cols-[10rem_1fr]">
+              <div className="hidden border-r border-border/70 bg-muted/20 p-3 md:block">
+                {['Painel', 'Projetos', 'Assinatura', 'Config'].map((item, index) => (
+                  <div
+                    key={item}
+                    className={`mb-1 rounded-lg px-3 py-2 text-[10px] font-black uppercase tracking-wider ${
+                      index === 0 ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="min-w-0 p-3 sm:p-4">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    { icon: Globe, label: 'Projetos', value: '12 ativos' },
+                    { icon: RefreshCw, label: 'Build', value: 'Verificado' },
+                    { icon: Lock, label: 'Mock API', value: 'Isolada' },
+                  ].map((item) => {
+                    const Icon = item.icon;
+
+                    return (
+                      <div key={item.label} className="min-w-0 rounded-lg border border-border/70 bg-background/60 p-3">
+                        <div className="flex items-center gap-2 text-primary">
+                          <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                          <span className="truncate text-[10px] font-black uppercase tracking-wider">{item.label}</span>
+                        </div>
+                        <p className="mt-2 truncate text-sm font-black text-foreground">{item.value}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_8rem]">
+                  <div className="rounded-lg border border-border/70 bg-background/60 p-3">
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                        Fluxo principal
+                      </span>
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-300">
+                        Online
+                      </span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-muted">
+                      <div className="h-full w-[72%] rounded-full bg-primary" />
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-border/70 bg-background/60 p-3">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Viewport</span>
+                    <p className="mt-2 text-sm font-black text-foreground">320+</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Bottom Area: Metrics & Scroll Indicator */}
-        <div className="w-full pb-8 pt-6">
+        <div className="w-full pb-4 pt-4 md:pb-6 md:pt-5">
           {/* Quick Metrics */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border-t border-border/40 pt-8"
+            className="mx-auto grid max-w-4xl grid-cols-2 gap-3 border-t border-border/40 pt-4 md:grid-cols-4 md:gap-6 md:pt-6"
           >
             <div className="text-center">
               <div className="text-2xl font-black text-foreground">100%</div>
@@ -350,7 +427,7 @@ export function LandingPage() {
               repeat: Infinity,
               ease: "easeInOut" 
             }}
-            className="flex flex-col items-center justify-center mt-8 cursor-pointer"
+            className="mt-5 hidden flex-col items-center justify-center sm:flex"
             onClick={() => {
               const el = document.getElementById('features');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -599,7 +676,7 @@ export function LandingPage() {
                 <button
                   type="button"
                   onClick={() => setActiveFaq(isOpen ? null : index)}
-                  className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-muted/10 transition-colors cursor-pointer"
+                  className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:bg-muted/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-inset"
                 >
                   <span className="text-xs font-black text-foreground uppercase tracking-tight">{faq.q}</span>
                   <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-250 ${isOpen ? 'rotate-180 text-primary font-bold' : ''}`} />
@@ -641,9 +718,21 @@ export function LandingPage() {
           </p>
 
           <div className="flex gap-4">
-            <button onClick={() => setAuthView('login')} className="text-[10px] font-black uppercase text-muted-foreground hover:text-foreground">Log In</button>
+            <button
+              type="button"
+              onClick={() => setAuthView('login')}
+              className="rounded-md text-[10px] font-black uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Log In
+            </button>
             <span className="text-border">|</span>
-            <button onClick={() => setAuthView('register')} className="text-[10px] font-black uppercase text-primary hover:text-primary/80">Sign Up</button>
+            <button
+              type="button"
+              onClick={() => setAuthView('register')}
+              className="rounded-md text-[10px] font-black uppercase text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Sign Up
+            </button>
           </div>
         </div>
       </footer>
@@ -658,8 +747,9 @@ export function LandingPage() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
+            type="button"
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 p-3 rounded-xl bg-card/85 backdrop-blur-md border border-border/80 shadow-lg text-muted-foreground hover:text-foreground hover:border-primary/40 focus:outline-none transition-all cursor-pointer group"
+            className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 z-50 rounded-xl border border-border/80 bg-card/85 p-3 text-muted-foreground shadow-lg backdrop-blur-md transition-all hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:bottom-6"
             aria-label="Voltar para o topo da página"
           >
             <ArrowUp className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1" />
