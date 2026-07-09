@@ -2,14 +2,16 @@
 
 ## Visao geral
 
-Este repositorio é um frontend starter kit em Next.js App Router. A aplicacao
-atual e uma experiencia SaaS demonstrativa com uma rota principal, estado global
-em Zustand e dominios visuais separados em `features/showcase`.
+O repositorio esta em transicao de um frontend starter kit validado para uma
+base full stack modular. O estado atual ainda e uma aplicacao Next.js App Router
+com uma rota principal, estado global em Zustand e dominios visuais em
+`features/showcase`. O estado alvo e uma base com Next.js para web, NestJS para
+API, PostgreSQL com Prisma, Docker, GitHub Actions e deploy primario no Railway.
 
-O objetivo arquitetural nesta fase é validar o frontend e manter pontos claros
-para substituir mocks por backend real no futuro.
+Use `docs/FULL_STACK_FOUNDATION.md` como fonte central para decisoes da nova
+fase.
 
-## Stack
+## Stack atual
 
 - Next.js 16 com App Router.
 - React 19.
@@ -23,7 +25,19 @@ para substituir mocks por backend real no futuro.
   1536px.
 - Docker e Docker Compose para ambiente local.
 
-## Fluxo de renderizacao
+## Stack alvo
+
+- Next.js para aplicacao web.
+- NestJS para API backend.
+- TypeScript strict em web e API.
+- PostgreSQL como banco relacional.
+- Prisma como ORM, schema, client e migrations.
+- Docker como unidade de empacotamento por servico.
+- Railway como deploy primario.
+- GitHub Actions para CI/CD.
+- AWS como alternativa futura.
+
+## Fluxo de renderizacao atual
 
 `app/layout.tsx` define o root layout, metadata e `ThemeProvider`.
 
@@ -53,15 +67,13 @@ O `Header` exibe a navegacao completa apenas a partir de `xl`; em larguras
 mobile e tablet a navegacao principal fica na bottom nav. A busca compacta do
 header aparece apenas em `2xl` para evitar sobreposicao entre logo, abas e
 acoes de usuario. O menu do usuario contem atalhos de navegacao, ajuda e logout;
-alternancia de tema fica na landing publica e na tela de settings, nao no menu
-do avatar.
+alternancia de tema fica na landing publica e na tela de settings.
 
 `components/layouts/sidebar.tsx` existe, mas nao esta montado em `app/page.tsx`
-no estado atual. Qualquer agente que for alterar navegacao deve decidir
-explicitamente se vai manter o modelo atual baseado em header + bottom nav ou
-reativar a sidebar.
+no estado atual. Qualquer alteracao de navegacao deve decidir explicitamente se
+mantem header + bottom nav ou reativa sidebar.
 
-## Estrutura de pastas
+## Estrutura atual de pastas
 
 ```txt
 app/                         Root layout, pagina principal e CSS global
@@ -75,11 +87,25 @@ lib/                         Store Zustand e utilitarios
 providers/                   Providers globais
 services/                    Contrato de API e mock service
 tests/                       Testes Vitest e setup
-e2e/                         Smoke tests Playwright da validacao frontend
+e2e/                         Smoke tests Playwright
 types/                       Tipos compartilhados de contratos
 ```
 
-## Estado global
+## Estrutura alvo de alto nivel
+
+A separacao fisica final ainda precisa de plano especifico. A direcao aceita e:
+
+```txt
+web ou apps/web              Aplicacao Next.js
+api ou apps/api              API NestJS
+prisma/                      Schema, migrations e seeds
+.github/workflows/           CI/CD
+```
+
+Nao mova arquivos em massa sem um plano de migracao. Enquanto a estrutura alvo
+nao existir, preserve a raiz atual e documente qualquer etapa intermediaria.
+
+## Estado global atual
 
 `lib/store.ts` concentra os slices atuais:
 
@@ -96,9 +122,9 @@ types/                       Tipos compartilhados de contratos
 adicionadas primeiro em `config/navigation.ts` e depois integradas ao switch de
 conteudo em `app/page.tsx`.
 
-Enquanto o projeto estiver em validacao frontend, e aceitavel manter a
-orquestracao no store. Ao iniciar backend real, preserve contratos e migre por
-fatias para evitar quebrar os fluxos visuais.
+Durante a migracao full stack, o store deve perder responsabilidade por dados
+persistentes aos poucos. Estado local/client-side deve permanecer para UI
+efemera, sessao de cliente quando aplicavel, filtros e notificacoes visuais.
 
 ## UI reutilizavel
 
@@ -114,7 +140,7 @@ fatias para evitar quebrar os fluxos visuais.
 Dashboard, projects, billing e settings devem preferir esses componentes antes
 de criar controles locais equivalentes.
 
-## Contrato de API
+## Contrato de API atual
 
 `services/api-client.ts` define `IApiService` com:
 
@@ -126,16 +152,65 @@ de criar controles locais equivalentes.
 `SYSTEM_CONFIG.api.isMockEnabled` seleciona entre `mockDashboardService` e
 `RealApiService`. No estado atual, mocks permanecem habilitados.
 
-## Client Components
+Na fase full stack, esse contrato deve servir como ponte. Antes de trocar uma
+tela para API real, defina DTOs, erros e testes do dominio.
 
-A maior parte da UI atual usa `'use client'` por depender de estado local,
-Zustand, formularios, Motion, localStorage ou eventos de browser.
+## Arquitetura alvo da API
 
-Antes de introduzir Server Components ou Route Handlers, confirme que a tarefa
-pertence a fase atual. Backend real e rotas API nao devem ser adicionados sem
-pedido explicito.
+A API NestJS deve ser organizada por dominio:
 
-## Testes
+- `auth`: login, logout, sessao, guards e autorizacao.
+- `users`: perfil e preferencias.
+- `projects`: CRUD e regras de negocio de projetos.
+- `activity`: logs/auditoria de eventos.
+- `billing`: plano, uso e integracoes futuras de pagamento.
+- `health`: status da API, banco e dependencias.
+
+Padroes esperados:
+
+- Controllers recebem HTTP e chamam services.
+- Services contem regras de negocio.
+- DTOs definem request/response.
+- Pipes validam entrada.
+- Filters padronizam erros.
+- Guards protegem rotas sensiveis.
+- Prisma fica atras de services/repositories, nunca diretamente no frontend.
+
+## Persistencia alvo
+
+PostgreSQL e o banco padrao. Prisma deve controlar schema e migrations. O banco
+de producao deve ser Railway Postgres como servico separado. O banco local pode
+rodar por Docker Compose.
+
+Segredos como `DATABASE_URL` ficam apenas no servidor. Nunca expose credenciais
+em `NEXT_PUBLIC_*`.
+
+## Client e Server Components
+
+A maior parte da UI atual usa `'use client'` por depender de Zustand,
+formularios, Motion, localStorage ou eventos de browser.
+
+Futuras telas devem empurrar `'use client'` para baixo da arvore. Leitura de
+dados server-side deve usar Server Components quando isso simplificar a pagina e
+nao exigir estado de browser. Mutacoes internas podem usar APIs ou Server
+Actions apenas quando a arquitetura aprovada permitir.
+
+## Deploy alvo
+
+Railway e o alvo primario. A direcao e:
+
+- Servicos separados para aplicacao/API quando a separacao existir.
+- Railway Postgres como banco gerenciado.
+- Dockerfile ou build config por servico.
+- Healthchecks.
+- Pre-deploy migrations Prisma.
+- GitHub Actions com lint, typecheck, testes, build e deploy quando habilitado.
+
+Para Next.js self-hosted/Docker, consulte a doc local de deploy e `output` antes
+de alterar `next.config.ts`. A doc local de Next indica que Docker suporta todos
+os recursos e que `output: "standalone"` cria um runtime minimo para deploy.
+
+## Testes atuais
 
 `vitest.config.ts` usa:
 
@@ -144,38 +219,30 @@ pedido explicito.
 - Ambiente `jsdom`.
 - Setup em `tests/setup.ts`.
 
-Testes existentes cobrem:
-
-- `Button`.
-- `useTheme` dentro do `ThemeProvider`.
-- `cn` em `lib/utils.ts`.
-- `useAppStore` nos fluxos mockados de auth, perfil, projetos, notificacoes,
-  configuracao, API keys, assinatura e uso.
-- `Modal` e `Dialog` com semantica acessivel de dialogo.
-- Formularios criticos de auth, projetos e settings.
-- Semantica acessivel do header, drawer mobile, controles segmentados do
-  dashboard e medidores de billing.
+Testes existentes cobrem componentes base, tema, store, auth, projetos,
+settings, billing, layout, modais/dialogs e acessibilidade dos fluxos principais.
 
 `playwright.config.ts` define smoke E2E Chromium-only em `e2e/`, com projetos
 explicitos para 320, 375, 768, 1024, 1365 e 1536px. O teste cobre landing,
-tema, login mock, navegacao para projetos/billing/settings, validacao basica de
-formulario, billing mockado, ausencia de overflow horizontal, foco visivel em
-controles principais e a troca responsiva entre bottom nav e nav desktop. Ele
-nao cria backend real nem persistencia.
+tema, login mock, navegacao, formulario de projetos, billing, settings,
+ausencia de overflow horizontal e foco visivel.
 
-`scripts/run-playwright-e2e.mjs` e o ponto de entrada de `pnpm run test:e2e`.
-Ele inicia o dev server quando necessario, reutiliza `localhost:3000` se ja
-houver servidor ativo, desativa o `webServer` gerenciado pelo Playwright via
-`PLAYWRIGHT_MANAGE_WEB_SERVER=0` e encerra apenas o servidor que ele iniciou.
+## Testes alvo
 
-Novas regras de negocio no store, formularios ou contratos devem receber teste
-focado quando alterarem comportamento.
+Quando API e banco existirem, acrescente:
+
+- Testes unitarios de services NestJS.
+- Testes de controllers/rotas.
+- Testes de contrato DTO/request/response.
+- Testes de migrations/seeds quando aplicavel.
+- Testes de integracao com banco em ambiente controlado.
+- Smoke de container e healthcheck para deploy.
 
 ## Acessibilidade aplicada
 
 Componentes de overlay devem expor `role="dialog"`, `aria-modal`, nome e
 descricao acessiveis. Botoes icon-only devem usar `aria-label`; `title` sozinho
-nao deve ser usado como nome acessivel de controle interativo.
+nao deve ser usado como nome acessivel.
 
 Campos customizados de formulario devem conectar erros com `aria-invalid` e
 `aria-describedby`, incluindo `textarea`, `checkbox`, `select` e inputs que nao
@@ -183,10 +250,14 @@ passam pelo componente base `Input`.
 
 ## Limites conhecidos
 
-- A aplicacao usa uma rota principal com navegacao por abas, nao rotas aninhadas.
+- A aplicacao atual usa uma rota principal com navegacao por abas, nao rotas
+  aninhadas.
 - `Sidebar` esta disponivel, mas nao montada.
-- Auth, projetos, API keys, assinatura, logs e infraestrutura sao simulados.
-- Docker Compose inclui PostgreSQL local, mas o frontend nao persiste dados nele.
-- Nao existe CI versionado em `.github` no estado atual.
+- Auth, projetos, API keys, assinatura, logs e infraestrutura ainda sao
+  simulados.
+- Docker Compose inclui PostgreSQL local, mas o frontend nao persiste dados
+  nele.
+- NestJS, Prisma, migrations, GitHub Actions e deploy Railway ainda nao estao
+  implementados.
 - `next-env.d.ts` e gerado pelo Next, ignorado pelo Git e nao deve ser editado
   manualmente.

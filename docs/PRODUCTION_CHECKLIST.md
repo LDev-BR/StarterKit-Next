@@ -1,26 +1,29 @@
 # Production Checklist
 
-Este checklist descreve o caminho para producao. No estado atual, o foco ainda
-e validacao frontend. Itens de backend e banco sao preparatorios e nao devem ser
-implementados sem pedido explicito.
+Este checklist descreve o caminho para producao a partir da fase Full Stack
+Foundation. O frontend esta validado como baseline; backend, banco, Docker de
+producao, Railway e CI/CD ainda precisam ser implementados por fases.
 
 ## Status atual
 
-- Frontend starter kit funcional: em validacao.
-- Backend real: nao implementado.
-- PostgreSQL real: nao integrado ao app.
+- Frontend Next.js validado: concluido.
+- Backend NestJS: nao implementado.
+- PostgreSQL real integrado ao app: nao implementado.
+- Prisma schema/migrations: nao implementado.
 - Auth real: nao implementada.
 - Billing real: nao implementado.
-- CI: nao versionado no repositorio.
-- Docker local: disponivel.
+- CI/CD GitHub Actions: nao versionado.
+- Deploy Railway: alvo primario, ainda nao configurado.
+- AWS: alternativa futura.
+- Docker local: disponivel para frontend e PostgreSQL local.
 
-## Gate de validacao frontend
+## Gate de baseline frontend
 
-- [x] `pnpm run lint` passa.
-- [x] `pnpm run lint:types` passa.
-- [x] `pnpm test` passa.
-- [x] `pnpm run build` passa.
-- [x] `pnpm run test:e2e` passa.
+- [x] `pnpm run lint` passou.
+- [x] `pnpm run lint:types` passou.
+- [x] `pnpm test` passou.
+- [x] `pnpm run build` passou.
+- [x] `pnpm run test:e2e` passou.
 - [x] Landing renderiza em mobile, tablet e desktop.
 - [x] Login/register mockados funcionam.
 - [x] Dashboard nao quebra com dados mockados.
@@ -35,26 +38,35 @@ implementados sem pedido explicito.
 
 Observacao de 2026-07-08: comandos de qualidade passaram localmente com
 `pnpm.cmd`. O smoke Playwright Chromium cobre 320, 375, 768, 1024, 1365 e
-1536px, validando landing, tema, login mock, navegacao principal, formulario de
-projetos, billing mockado, settings, ausencia de overflow horizontal no
-documento, foco visivel em controles principais e estrategia de navegacao
-mobile/tablet vs desktop. No Windows,
-`pnpm.cmd run test:e2e` gerencia o dev server por
-`scripts/run-playwright-e2e.mjs` e encerra a arvore de processos que ele mesmo
-iniciar.
+1536px.
+
+## Gate de documentacao full stack
+
+- [x] `docs/FULL_STACK_FOUNDATION.md` criado.
+- [x] `AGENTS.md` atualizado para a nova fase.
+- [x] `README.md` atualizado para estado atual e stack alvo.
+- [x] `docs/README.md` atualizado.
+- [x] `docs/AGENT_WORKFLOWS.md` atualizado.
+- [x] `docs/ARCHITECTURE.md` atualizado.
+- [x] `docs/DATA_AND_API_CONTRACTS.md` atualizado.
+- [x] `docs/ROADMAP.md` atualizado.
+- [x] `docs/PRODUCTION_CHECKLIST.md` atualizado.
+- [x] Revisao final de links, caminhos e consistencia concluida.
 
 ## Qualidade de codigo
 
-- [x] TypeScript strict mantido.
-- [x] Nenhum novo `any` introduzido.
+- [x] TypeScript strict mantido no frontend atual.
+- [x] Nenhum novo `any` introduzido na fase frontend.
 - [x] Componentes reutilizaveis ficam em `components/ui`.
 - [x] Logica de dominio compartilhada nao fica escondida em JSX sem
-  necessidade.
-- [x] Nenhuma dependencia nova foi adicionada sem necessidade.
+  necessidade no estado atual.
+- [x] Nenhuma dependencia nova foi adicionada sem necessidade na validacao
+  frontend.
 - [x] Arquivos gerados pelo Next, como `next-env.d.ts`, nao foram editados
   manualmente.
-- [x] Documentacao em `docs/` foi atualizada quando contratos ou arquitetura
-  mudaram.
+- [ ] Quando NestJS existir, TypeScript strict tambem deve valer para a API.
+- [ ] Quando Prisma existir, schema e migrations devem ser revisados.
+- [ ] Quando CI existir, lint/typecheck/tests/build devem rodar antes de deploy.
 
 ## UI, acessibilidade e UX
 
@@ -73,43 +85,46 @@ iniciar.
 
 ## Next.js e build
 
-- [x] Mudancas de App Router foram conferidas na doc local
+- [x] Mudancas de App Router devem consultar a doc local
   `node_modules/next/dist/docs/`.
 - [x] `next.config.ts` continua com `reactStrictMode`.
 - [x] `typescript.ignoreBuildErrors` continua `false`.
-- [ ] `images.remotePatterns` permite apenas hosts necessarios.
-- [x] Client Components sao usados por necessidade real de interatividade na
-  fase frontend atual.
-- [ ] Server Components, Route Handlers e novas rotas so foram adicionados se a
-  fase permitir.
-- [ ] Build Docker standalone foi testado antes de usar imagem em producao.
+- [ ] Avaliar `output: "standalone"` antes de deploy Docker self-hosted.
+- [ ] `images.remotePatterns` deve permitir apenas hosts necessarios quando
+  imagens remotas forem usadas.
+- [ ] Server Components devem ser usados para leitura server-side quando
+  simplificarem dados e nao exigirem browser APIs.
+- [ ] Client Components devem ficar no menor trecho interativo possivel.
+- [ ] Build Docker standalone deve ser testado antes de usar imagem em producao.
 
-## Backend futuro
+## NestJS API futura
 
-Nao implementar sem pedido explicito. Quando a fase iniciar:
-
-- [ ] Contratos de API definidos antes do servidor.
-- [ ] DTOs e erros padronizados.
-- [ ] Auth real definida: sessao, cookies/tokens, expiracao e refresh.
-- [ ] Rate limiting em endpoints sensiveis.
-- [ ] Validacao server-side com schema.
+- [ ] Estrutura da API definida e documentada.
+- [ ] Healthcheck implementado.
+- [ ] Modulos por dominio definidos.
+- [ ] Controllers finos.
+- [ ] Services com regras de negocio.
+- [ ] DTOs de request/response.
+- [ ] Validacao server-side.
+- [ ] Erros padronizados.
+- [ ] Guards para rotas sensiveis.
 - [ ] Logs estruturados sem dados sensiveis.
-- [ ] Healthcheck real.
-- [ ] Documentacao OpenAPI ou equivalente.
-- [ ] Testes de integracao para endpoints criticos.
+- [ ] Testes unitarios de services/controllers.
+- [ ] OpenAPI/Swagger quando contratos HTTP estabilizarem.
 
-## Banco de dados futuro
+## Prisma e PostgreSQL futuros
 
-Nao implementar sem pedido explicito. Quando a fase iniciar:
-
-- [ ] Ferramenta de migrations definida.
-- [ ] Migrations reproduziveis.
-- [ ] Seeds locais documentadas.
+- [ ] `DATABASE_URL` documentado e tratado como segredo.
+- [ ] Prisma instalado/configurado.
+- [ ] `schema.prisma` inicial definido.
+- [ ] Migration inicial versionada.
+- [ ] Seeds locais documentadas com dados fake.
 - [ ] Constraints e indices revisados.
-- [ ] Backups e restore testados.
-- [ ] Usuario de aplicacao com menor privilegio.
-- [ ] Segredos fora do frontend.
-- [ ] Dados sensiveis criptografados ou protegidos conforme necessidade.
+- [ ] `prisma generate` validado.
+- [ ] Migrations rodam localmente.
+- [ ] Railway Postgres configurado como servico separado.
+- [ ] Migrations de deploy rodam como comando explicito/pre-deploy.
+- [ ] Backups e restore definidos antes de producao real.
 
 ## Seguranca
 
@@ -119,22 +134,50 @@ Nao implementar sem pedido explicito. Quando a fase iniciar:
 - [ ] Dependencias auditadas antes de release.
 - [ ] Headers de seguranca definidos na fase de deploy.
 - [ ] CSP avaliada para scripts, imagens e conexoes.
-- [ ] Politica de CORS definida quando backend existir.
+- [ ] Politica de CORS definida quando API existir.
 - [ ] Cookies marcados como `HttpOnly`, `Secure` e `SameSite` quando auth real
   existir.
 - [ ] Fluxos sensiveis possuem protecao contra CSRF quando aplicavel.
+- [ ] Rate limiting definido em endpoints sensiveis.
+- [ ] Logs nao incluem senhas, tokens, cookies ou chaves.
 
-## Deploy e operacao
+## Docker e Railway
 
-- [ ] Ambiente de deploy escolhido e documentado.
-- [ ] Variaveis por ambiente documentadas.
-- [ ] CI executa lint, typecheck, tests e build.
-- [ ] Preview deploys ou ambiente staging disponivel.
-- [ ] Observabilidade definida: erros, logs e metricas.
-- [ ] Rollback documentado.
-- [ ] Runbook minimo para incidentes.
-- [ ] Docker image final roda como usuario nao-root.
-- [ ] Healthcheck de aplicacao disponivel.
+- [ ] Dockerfile(s) de producao definidos por servico.
+- [ ] Imagens rodam como usuario nao-root quando possivel.
+- [ ] Build de imagem validado localmente.
+- [ ] Start de container validado localmente.
+- [ ] Healthcheck configurado por servico.
+- [ ] Railway Postgres usado como banco gerenciado.
+- [ ] Variaveis por servico documentadas.
+- [ ] Pre-deploy migrations Prisma configuradas quando Prisma existir.
+- [ ] Rollback/redeploy documentado.
+- [ ] Banco nao roda dentro do mesmo container da aplicacao em producao.
+
+## GitHub Actions e CI/CD
+
+- [ ] Workflow de lint.
+- [ ] Workflow de typecheck.
+- [ ] Workflow de testes.
+- [ ] Workflow de build.
+- [ ] Workflow de E2E quando aplicavel.
+- [ ] Workflow de build de imagem Docker quando aplicavel.
+- [ ] Deploy Railway protegido por secrets e gates.
+- [ ] Falha de validacao bloqueia deploy.
+- [ ] Environments/secrets documentados.
+- [ ] Branch protection ou regra equivalente avaliada.
+
+## AWS futura
+
+AWS nao e alvo inicial. Quando houver necessidade real:
+
+- [ ] Escolher runtime: ECS/Fargate como direcao provavel.
+- [ ] Escolher banco: RDS PostgreSQL como direcao provavel.
+- [ ] Definir ECR para imagens.
+- [ ] Definir VPC, subnets e security groups.
+- [ ] Definir IAM/OIDC para GitHub Actions.
+- [ ] Definir CloudWatch logs/metricas.
+- [ ] Documentar custo e trade-offs antes de migrar.
 
 ## Release gate
 
@@ -144,4 +187,7 @@ Uma release de producao so deve ser aceita quando:
 - Itens nao aplicaveis estiverem explicitamente justificados.
 - O build de producao foi executado.
 - Fluxos criticos foram validados em ambiente equivalente a producao.
+- Migrations foram aplicadas de forma controlada quando houver banco real.
+- Healthchecks passam.
+- Rollback ou redeploy manual esta documentado.
 - Roadmap e docs refletem o estado real do repositorio.

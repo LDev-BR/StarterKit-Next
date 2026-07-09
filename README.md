@@ -1,29 +1,48 @@
 # StarterKit Next
 
-Starter Kit frontend em Next.js, React, TypeScript, Tailwind CSS v4, Zustand,
-React Hook Form, Zod, Motion, Vitest e Playwright.
+Starter kit em evolucao para uma aplicacao full stack modular com Next.js,
+NestJS, TypeScript, PostgreSQL, Prisma, Docker, GitHub Actions e deploy primario
+no Railway.
 
-O projeto entrega uma experiencia SaaS demonstrativa com autenticacao simulada,
-dashboard, projetos, assinatura, configuracoes, componentes de UI e tema claro/escuro.
-A camada visual premium foi preservada: glassmorphism, microanimacoes e layout responsivo.
-Backend real, persistencia real e CI versionado ainda nao fazem parte desta
-fase; os fluxos usam mocks e estado em memoria.
+O estado atual do repositorio ainda e uma experiencia SaaS frontend validada em
+Next.js: landing, autenticacao simulada, dashboard, projetos, assinatura,
+configuracoes, componentes de UI, tema claro/escuro, mocks, Vitest e Playwright.
+A camada visual premium foi preservada: glassmorphism, microanimacoes e layout
+responsivo.
 
-## Stack
+A nova fase e Full Stack Foundation: manter o frontend validado funcionando
+enquanto backend, banco, Prisma, Docker, CI/CD e deploy entram por fases.
+
+## Stack atual
 
 - Next.js 16 com App Router
 - React 19
 - TypeScript em modo strict
 - Tailwind CSS v4 via `@tailwindcss/postcss`
-- Zustand para estado global
+- Zustand para estado global mockado
 - React Hook Form + Zod para formularios
 - Motion para animacoes
 - Vitest + Testing Library para testes unitarios e de componentes
 - Playwright Chromium para smoke E2E nos viewports 320, 375, 768, 1024,
   1365 e 1536px
-- Docker Compose com frontend e PostgreSQL local
+- Docker Compose com frontend e PostgreSQL local ainda nao integrado ao app
 
-## Estrutura
+## Stack alvo
+
+- Next.js para a aplicacao web
+- NestJS para a API backend
+- TypeScript strict em todas as camadas
+- PostgreSQL como banco relacional
+- Prisma como ORM, schema e migrations
+- Docker como unidade de empacotamento
+- GitHub Actions para CI/CD
+- Railway como alvo primario de deploy
+- AWS como alternativa futura
+
+Supabase nao e dependencia padrao. Pode ser reavaliado apenas se houver
+necessidade clara de Auth, Storage, Realtime ou painel gerenciado.
+
+## Estrutura atual
 
 ```txt
 app/                         Rotas, layout e CSS global do Next.js
@@ -45,9 +64,17 @@ lib/                         Store Zustand e utilitarios
 providers/                   Providers de aplicacao
 services/                    Contratos e mock de API
 tests/                       Testes unitarios e setup do Vitest
-e2e/                         Smoke tests Playwright da validacao frontend
+e2e/                         Smoke tests Playwright
 types/                       Tipos compartilhados
-.vscode/                     Ajustes compartilhados do VS Code, sem impacto no runtime
+```
+
+Estrutura alvo futura, a definir em plano proprio:
+
+```txt
+web ou apps/web              Aplicacao Next.js
+api ou apps/api              API NestJS
+prisma/                      Schema, migrations e seeds
+.github/workflows/           CI/CD
 ```
 
 ## Desenvolvimento
@@ -85,22 +112,31 @@ No Windows, os mesmos comandos podem ser executados com `pnpm.cmd`. O Playwright
 usa Chromium apenas e valida landing, tema, login mock, navegacao principal,
 formulario de projetos, billing mockado, settings, foco visivel e ausencia de
 overflow horizontal nos viewports 320, 375, 768, 1024, 1365 e 1536px.
+
 O script `test:e2e` inicia o dev server quando necessario, reutiliza
 `localhost:3000` se ele ja estiver ativo e encerra apenas o servidor que ele
 mesmo iniciou.
 
 ## Roadmap
 
-O foco atual e validar a experiencia frontend: fluxos, componentes, tema,
-responsividade, contratos de API e qualidade de build. Depois dessa validacao,
-comeca o desenvolvimento ativo do backend e do banco de dados, substituindo
-gradualmente os mocks em `services/` e `lib/store.ts` por integracoes reais.
+A validacao frontend esta fechada como baseline. A proxima fase documentada em
+`docs/FULL_STACK_FOUNDATION.md` prepara a migracao por etapas para:
+
+1. Definir fronteiras de repositorio e servicos.
+2. Introduzir API NestJS.
+3. Introduzir PostgreSQL e Prisma.
+4. Migrar dominios dos mocks para API real.
+5. Adicionar Docker de producao por servico.
+6. Configurar Railway como deploy primario.
+7. Adicionar GitHub Actions para CI/CD.
+8. Endurecer seguranca, observabilidade e operacao.
 
 ## Documentacao para desenvolvimento agentico
 
 A pasta `docs/` contem documentos praticos para orientar agentes de IA e
 desenvolvedores:
 
+- `docs/FULL_STACK_FOUNDATION.md`
 - `docs/AGENT_WORKFLOWS.md`
 - `docs/ARCHITECTURE.md`
 - `docs/FRONTEND_PATTERNS.md`
@@ -118,31 +154,36 @@ Crie o arquivo local de ambiente:
 cp .env.example .env
 ```
 
-Suba a stack de desenvolvimento:
+Suba a stack de desenvolvimento atual:
 
 ```bash
 pnpm run docker:dev
 ```
 
-Servicos:
+Servicos atuais:
 
 - Frontend: `http://localhost:3000`
-- PostgreSQL: `localhost:5432`
+- PostgreSQL local: `localhost:5432`
 - URL interna do banco: `postgresql://starterkit:starterkit@database:5432/starterkit?schema=public`
+
+O PostgreSQL do Compose ainda nao e fonte de dados do app atual. Em producao, o
+alvo e usar Railway Postgres como servico separado, nao embutir banco no mesmo
+container da aplicacao.
 
 ## Observacoes
 
-- `services/api-client.ts` e `services/mock-service.ts` mantem o contrato de API para uma futura troca dos mocks por endpoints reais.
-- `lib/store.ts` concentra a simulacao atual de autenticacao, projetos, chaves de API, notificacoes, assinatura e logs.
+- `services/api-client.ts` e `services/mock-service.ts` mantem o contrato de API
+  para a futura migracao por dominio.
+- `lib/store.ts` concentra a simulacao atual de autenticacao, projetos, chaves
+  de API, notificacoes, assinatura e logs.
 - A navegacao principal usa header desktop a partir de `xl`; mobile e tablet
   usam bottom nav com safe area.
 - A `Sidebar` segue disponivel como variante opcional de layout, mas nao e
   montada por padrao.
 - A landing publica foi mantida enxuta e nao deve reintroduzir previews
   decorativos que disputem leitura com o hero.
-- Testes cobrem componentes base, tema, store, formularios criticos e
-  semantica acessivel de modais/dialogs.
+- Testes cobrem componentes base, tema, store, formularios criticos e semantica
+  acessivel de modais/dialogs.
 - Playwright cobre um smoke visual/funcional dos fluxos principais sem backend
   real.
-- `.vscode/settings.json` e opcional para execucao, mas fica versionado para compartilhar ajustes neutros do projeto no VS Code, como evitar falso positivo de regras CSS usadas pelo Tailwind.
 - O repositorio usa uma unica configuracao de ESLint: `eslint.config.mjs`.
